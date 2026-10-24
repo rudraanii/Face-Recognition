@@ -7,3 +7,7 @@ env/
 .env
 .vscode/
 .ipynb_checkpoints/
+face_recognizer.db
+dist/
+build/
+*.spec
