@@ -1,29 +1,24 @@
-# Containerized environment for Face Recognition Attendance System
+# Production Dockerfile for Face Recognition Web System on Render / Cloud
 FROM python:3.10-slim
 
-# Install system dependencies for Tkinter, OpenCV, and X11 virtual display
+# Install system libraries needed by OpenCV
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3-tk \
     libgl1 \
     libglib2.0-0 \
-    xvfb \
-    x11vnc \
-    novnc \
-    websockify \
-    net-tools \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Install python dependencies
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application files
 COPY . .
 
-# Expose noVNC web port for browser access
-EXPOSE 8080
+# Render dynamically sets $PORT (defaults to 10000 if not set)
+ENV PORT=10000
+EXPOSE $PORT
 
-# Start script running Xvfb virtual frame buffer, VNC server, noVNC, and the application
-CMD ["sh", "-c", "Xvfb :0 -screen 0 1366x768x16 & export DISPLAY=:0 && x11vnc -display :0 -forever -nopw -listen localhost -xkb & websockify --web /usr/share/novnc 8080 localhost:5900 & python run.py"]
+# Run Gunicorn WSGI server hosting the Pink UI Web App
+CMD ["sh", "-c", "gunicorn app:app --bind 0.0.0.0:${PORT:-10000} --workers 2 --timeout 120"]
