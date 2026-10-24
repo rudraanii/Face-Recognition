@@ -3,199 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FACERA // AI Face Recognition Attendance</title>
+    <title>AURA // Intelligent Facial Attendance Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Distinct Creative Pink Palette */
-            --pink-bg-deep: #12030d;
-            --pink-bg-card: rgba(38, 10, 31, 0.65);
-            --pink-bg-hover: rgba(65, 17, 53, 0.75);
-            --pink-border: rgba(244, 114, 182, 0.25);
-            --pink-border-glow: rgba(244, 114, 182, 0.6);
-            --pink-neon: #ff2a85;
-            --pink-hot: #ec4899;
-            --pink-rose: #f43f5e;
-            --pink-blush: #fce7f3;
+            /* Aura Rose & Pink Palette Hierarchy */
+            --bg-obsidian: #080307;
+            --bg-card: rgba(26, 9, 21, 0.7);
+            --bg-card-hover: rgba(42, 13, 34, 0.85);
+            --bg-glass-subtle: rgba(255, 255, 255, 0.03);
+            
+            /* Rose & Pink Variations */
+            --pink-primary: #ff2a85;
+            --pink-vibrant: #f43f8e;
+            --pink-coral: #fb719f;
+            --pink-blush: #ffe4ef;
             --pink-pastel: #fbcfe8;
-            --pink-muted: #fda4af;
-            --pink-gradient: linear-gradient(135deg, #f43f5e 0%, #ec4899 50%, #d946ef 100%);
-            --pink-gradient-glow: linear-gradient(135deg, rgba(244, 63, 94, 0.4), rgba(236, 72, 153, 0.4));
-            --pink-glow-box: 0 0 25px rgba(236, 72, 153, 0.35);
-            --pink-glow-text: 0 0 12px rgba(255, 42, 133, 0.6);
-            --radius-lg: 20px;
-            --radius-md: 14px;
+            --pink-soft: #f472b6;
+            --pink-border: rgba(255, 110, 168, 0.18);
+            --pink-border-glow: rgba(255, 64, 140, 0.6);
+            --pink-glow-sm: 0 0 16px rgba(255, 42, 133, 0.3);
+            --pink-glow-lg: 0 0 35px rgba(255, 42, 133, 0.45);
+            
+            /* Text Tones */
+            --text-heading: #fff5f8;
+            --text-body: #e4c5d5;
+            --text-muted: #a37c93;
+            
+            /* Transitions & Radii */
+            --radius-xl: 24px;
+            --radius-lg: 18px;
+            --radius-md: 12px;
             --radius-sm: 8px;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background-color: var(--pink-bg-deep);
-            color: #ffffff;
+            background-color: var(--bg-obsidian);
+            color: var(--text-body);
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
             background-image: 
-                radial-gradient(circle at 15% 15%, rgba(244, 63, 94, 0.18) 0%, transparent 40%),
-                radial-gradient(circle at 85% 25%, rgba(236, 72, 153, 0.16) 0%, transparent 45%),
-                radial-gradient(circle at 50% 85%, rgba(217, 70, 239, 0.14) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 42, 133, 0.12) 0%, transparent 40%);
+                radial-gradient(1100px circle at 50% -80px, rgba(255, 42, 133, 0.16), transparent 70%),
+                radial-gradient(900px circle at 90% 85%, rgba(244, 63, 142, 0.1), transparent 60%),
+                radial-gradient(700px circle at 10% 60%, rgba(217, 70, 239, 0.08), transparent 55%);
             background-attachment: fixed;
         }
 
-        /* Glassmorphism utility */
-        .glass-panel {
-            background: var(--pink-bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--pink-border);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Subtle grid background texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(rgba(255, 110, 168, 0.08) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .glass-panel:hover {
-            border-color: var(--pink-border-glow);
-        }
-
-        /* Top Navigation Header */
-        header {
+        /* Navigation Bar */
+        nav.navbar {
             position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(18, 3, 13, 0.75);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--pink-border);
-            padding: 16px 32px;
+            top: 16px;
+            z-index: 1000;
+            max-width: 1320px;
+            margin: 0 auto 32px;
+            padding: 12px 24px;
+            background: rgba(22, 7, 18, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--pink-border);
+            border-radius: 9999px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04);
         }
 
-        .brand-logo {
+        .brand-container {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             text-decoration: none;
         }
 
-        .brand-icon {
-            width: 44px;
-            height: 44px;
-            background: var(--pink-gradient);
-            border-radius: 12px;
+        .brand-badge {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--pink-primary), #ec4899);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: var(--pink-glow-box);
-            font-size: 22px;
+            box-shadow: var(--pink-glow-sm);
+            font-size: 18px;
         }
 
-        .brand-text h1 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #fff 30%, var(--pink-pastel) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .brand-text p {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--pink-hot);
-            font-weight: 600;
-        }
-
-        .nav-tabs {
+        .brand-titles h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--text-heading);
             display: flex;
-            background: rgba(45, 12, 38, 0.6);
+            align-items: center;
+            gap: 6px;
+        }
+
+        .brand-titles h1 span {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            background: rgba(255, 42, 133, 0.15);
+            border: 1px solid rgba(255, 42, 133, 0.35);
+            border-radius: 6px;
+            color: var(--pink-primary);
+            letter-spacing: 0.05em;
+        }
+
+        /* Tab Switcher */
+        .tabs-pill {
+            display: flex;
+            background: rgba(35, 12, 28, 0.6);
             border: 1px solid var(--pink-border);
-            padding: 5px;
-            border-radius: 30px;
+            padding: 4px;
+            border-radius: 9999px;
             gap: 4px;
         }
 
-        .nav-btn {
+        .tab-btn {
             background: transparent;
             border: none;
-            color: var(--pink-blush);
-            padding: 9px 18px;
-            border-radius: 24px;
+            color: var(--text-muted);
+            padding: 8px 18px;
+            border-radius: 9999px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.25s ease;
+            transition: all 0.25s var(--ease);
         }
 
-        .nav-btn:hover {
+        .tab-btn:hover {
+            color: var(--text-heading);
+            background: rgba(255, 110, 168, 0.1);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--pink-primary) 0%, var(--pink-vibrant) 100%);
             color: #ffffff;
-            background: rgba(244, 63, 94, 0.15);
+            box-shadow: 0 4px 16px rgba(255, 42, 133, 0.4);
         }
 
-        .nav-btn.active {
-            background: var(--pink-gradient);
-            color: #ffffff;
-            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
-        }
-
-        .system-badge {
+        .status-pill {
             display: flex;
             align-items: center;
             gap: 8px;
             padding: 6px 14px;
-            background: rgba(236, 72, 153, 0.12);
-            border: 1px solid rgba(236, 72, 153, 0.3);
-            border-radius: 20px;
+            border-radius: 9999px;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.3);
             font-size: 12px;
             font-weight: 600;
-            color: var(--pink-blush);
+            color: #4ade80;
         }
 
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
+        .pulse-indicator {
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
-            background: var(--pink-neon);
-            box-shadow: 0 0 10px var(--pink-neon);
+            background: #4ade80;
+            box-shadow: 0 0 8px #4ade80;
             animation: pulse 1.8s infinite;
         }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.85); }
+            50% { opacity: 0.4; transform: scale(0.8); }
         }
 
-        /* Main Container */
+        /* Main Workspace Layout */
         main {
-            max-width: 1380px;
-            margin: 28px auto;
-            padding: 0 24px;
+            max-width: 1320px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Stat Row */
-        .stats-grid {
+        /* Glassmorphism Card System */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--pink-border);
+            border-radius: var(--radius-xl);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 110, 168, 0.35);
+        }
+
+        /* Overview Stat Cards */
+        .stats-row {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 18px;
             margin-bottom: 28px;
         }
 
-        .stat-card {
-            padding: 20px 24px;
+        .stat-box {
+            padding: 22px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -203,106 +236,110 @@
             overflow: hidden;
         }
 
-        .stat-card::before {
+        .stat-box::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--pink-gradient);
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--pink-primary), transparent);
+            opacity: 0.5;
         }
 
-        .stat-info h3 {
-            font-size: 28px;
-            font-weight: 800;
+        .stat-numbers p {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .stat-numbers h3 {
             font-family: 'Space Grotesk', sans-serif;
-            color: #ffffff;
-            margin-bottom: 4px;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-heading);
+            letter-spacing: -0.02em;
         }
 
-        .stat-info p {
-            font-size: 13px;
-            color: var(--pink-muted);
-            font-weight: 500;
-        }
-
-        .stat-icon {
+        .stat-icon-wrap {
             width: 48px;
             height: 48px;
-            border-radius: 12px;
-            background: rgba(236, 72, 153, 0.15);
+            border-radius: var(--radius-md);
+            background: rgba(255, 42, 133, 0.1);
             border: 1px solid var(--pink-border);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 22px;
-            color: var(--pink-hot);
+            color: var(--pink-primary);
         }
 
-        /* Tab Content Containers */
-        .tab-panel {
+        /* Tab Visibility */
+        .tab-content {
             display: none;
-            animation: fadeIn 0.35s ease;
+            animation: fadeIn 0.4s var(--ease);
         }
 
-        .tab-panel.active {
+        .tab-content.active {
             display: block;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ---------------- Tab 1: Live Scanner Layout ---------------- */
-        .scanner-grid {
+        /* ---------------- TAB 1: LIVE SCANNER ---------------- */
+        .scanner-layout {
             display: grid;
-            grid-template-columns: 2.1fr 1fr;
+            grid-template-columns: 1.8fr 1fr;
             gap: 24px;
         }
 
-        .camera-card {
-            padding: 24px;
+        .camera-console {
+            padding: 26px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
         }
 
-        .camera-header {
+        .console-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .camera-header h2 {
-            font-size: 18px;
+        .console-title h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
             font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #fff;
+            color: var(--text-heading);
+            letter-spacing: -0.02em;
         }
 
-        .viewfinder-wrapper {
+        .console-title p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .camera-viewfinder {
             position: relative;
             width: 100%;
             height: 480px;
-            border-radius: var(--radius-md);
-            overflow: hidden;
+            border-radius: var(--radius-lg);
             background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            overflow: hidden;
             border: 1px solid var(--pink-border);
-            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), var(--pink-glow-sm);
         }
 
         #webcam-video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: scaleX(-1); /* Mirror camera */
+            transform: scaleX(-1);
         }
 
         #overlay-canvas {
@@ -315,51 +352,51 @@
             transform: scaleX(-1);
         }
 
-        /* HUD Scanner Corners & Laser Animation */
-        .hud-corner {
+        /* HUD Geometric Precision Corners */
+        .hud-bracket {
             position: absolute;
-            width: 28px;
-            height: 28px;
-            border: 3px solid var(--pink-neon);
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--pink-primary);
             pointer-events: none;
-            box-shadow: 0 0 10px var(--pink-neon);
             z-index: 10;
+            box-shadow: 0 0 12px var(--pink-primary);
         }
 
-        .hud-tl { top: 16px; left: 16px; border-right: none; border-bottom: none; border-top-left-radius: 8px; }
-        .hud-tr { top: 16px; right: 16px; border-left: none; border-bottom: none; border-top-right-radius: 8px; }
-        .hud-bl { bottom: 16px; left: 16px; border-right: none; border-top: none; border-bottom-left-radius: 8px; }
-        .hud-br { bottom: 16px; right: 16px; border-left: none; border-top: none; border-bottom-right-radius: 8px; }
+        .b-top-left { top: 20px; left: 20px; border-right: none; border-bottom: none; border-top-left-radius: 8px; }
+        .b-top-right { top: 20px; right: 20px; border-left: none; border-bottom: none; border-top-right-radius: 8px; }
+        .b-bottom-left { bottom: 20px; left: 20px; border-right: none; border-top: none; border-bottom-left-radius: 8px; }
+        .b-bottom-right { bottom: 20px; right: 20px; border-left: none; border-top: none; border-bottom-right-radius: 8px; }
 
-        .laser-line {
+        /* Scanning Neon Laser */
+        .scan-laser {
             position: absolute;
-            left: 0;
-            right: 0;
+            left: 0; right: 0;
             height: 2px;
-            background: linear-gradient(90deg, transparent, var(--pink-neon), transparent);
-            box-shadow: 0 0 15px var(--pink-neon);
-            animation: scan 2.5s infinite linear;
+            background: linear-gradient(90deg, transparent, var(--pink-primary), #ffffff, var(--pink-primary), transparent);
+            box-shadow: 0 0 20px var(--pink-primary), 0 0 6px #ffffff;
+            animation: laserScan 2.8s infinite ease-in-out;
             pointer-events: none;
             z-index: 9;
         }
 
-        @keyframes scan {
-            0% { top: 0%; opacity: 0.2; }
+        @keyframes laserScan {
+            0% { top: 6%; opacity: 0.15; }
             50% { opacity: 0.9; }
-            100% { top: 100%; opacity: 0.2; }
+            100% { top: 94%; opacity: 0.15; }
         }
 
-        .camera-controls {
+        .camera-footer {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-top: 6px;
         }
 
-        .btn {
-            background: var(--pink-gradient);
-            color: #fff;
-            border: none;
+        /* Styled Buttons */
+        .btn-action {
+            background: linear-gradient(135deg, var(--pink-primary) 0%, var(--pink-vibrant) 100%);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 12px 24px;
             border-radius: var(--radius-md);
             font-size: 14px;
@@ -368,50 +405,49 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.35);
-            transition: all 0.25s ease;
+            box-shadow: 0 6px 20px rgba(255, 42, 133, 0.35);
+            transition: all 0.25s var(--ease);
         }
 
-        .btn:hover {
+        .btn-action:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 22px rgba(244, 63, 94, 0.55);
+            box-shadow: 0 8px 28px rgba(255, 42, 133, 0.55);
         }
 
-        .btn-secondary {
-            background: rgba(244, 114, 182, 0.15);
+        .btn-ghost {
+            background: rgba(255, 110, 168, 0.1);
             border: 1px solid var(--pink-border);
             color: var(--pink-blush);
-            box-shadow: none;
+            padding: 11px 20px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s var(--ease);
         }
 
-        .btn-secondary:hover {
-            background: rgba(244, 114, 182, 0.25);
+        .btn-ghost:hover {
+            background: rgba(255, 110, 168, 0.2);
             color: #fff;
         }
 
-        .btn-danger {
-            background: linear-gradient(135deg, #e11d48, #be123c);
-        }
-
-        /* Activity Ticker Card */
-        .activity-card {
-            padding: 24px;
+        /* Activity Feed Sidebar */
+        .feed-card {
+            padding: 26px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            max-height: 590px;
+            gap: 20px;
+            height: 625px;
         }
 
-        .activity-card h2 {
+        .feed-card-header h3 {
+            font-family: 'Outfit', sans-serif;
             font-size: 18px;
             font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #fff;
+            color: var(--text-heading);
         }
 
-        .attendance-feed {
+        .feed-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -419,262 +455,295 @@
             padding-right: 4px;
         }
 
-        .feed-item {
-            background: rgba(65, 17, 53, 0.45);
-            border: 1px solid var(--pink-border);
-            padding: 14px;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: slideIn 0.3s ease;
+        .feed-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .feed-list::-webkit-scrollbar-thumb {
+            background: var(--pink-border);
+            border-radius: 4px;
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(12px); }
+        .log-entry {
+            background: rgba(45, 14, 36, 0.5);
+            border: 1px solid var(--pink-border);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            animation: slideRight 0.35s var(--ease);
+        }
+
+        @keyframes slideRight {
+            from { opacity: 0; transform: translateX(16px); }
             to { opacity: 1; transform: translateX(0); }
         }
 
-        .feed-avatar {
-            width: 40px;
-            height: 40px;
+        .entry-avatar {
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            background: var(--pink-gradient);
+            background: linear-gradient(135deg, var(--pink-primary), #ec4899);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
+            font-weight: 800;
+            font-size: 16px;
             color: #fff;
-            font-size: 15px;
+            box-shadow: var(--pink-glow-sm);
             flex-shrink: 0;
-            box-shadow: 0 0 10px rgba(244, 63, 94, 0.4);
         }
 
-        .feed-details {
+        .entry-info {
             flex-grow: 1;
         }
 
-        .feed-details h4 {
+        .entry-info h5 {
             font-size: 14px;
             font-weight: 700;
-            color: #fff;
+            color: var(--text-heading);
         }
 
-        .feed-details p {
+        .entry-info p {
             font-size: 12px;
-            color: var(--pink-muted);
+            color: var(--text-muted);
+            margin-top: 2px;
         }
 
-        .feed-badge {
-            background: rgba(34, 197, 94, 0.2);
-            color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.4);
+        .badge-verified {
             padding: 4px 10px;
-            border-radius: 12px;
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #4ade80;
+            border-radius: 9999px;
             font-size: 11px;
             font-weight: 700;
+            letter-spacing: 0.04em;
         }
 
-        /* ---------------- Tab 2: Student Directory ---------------- */
-        .directory-header {
+        /* ---------------- TAB 2: STUDENTS DIRECTORY ---------------- */
+        .toolbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
             gap: 16px;
+            margin-bottom: 24px;
         }
 
-        .search-box {
-            position: relative;
+        .search-pill {
             flex-grow: 1;
-            max-width: 450px;
+            max-width: 480px;
+            position: relative;
         }
 
-        .search-input {
+        .search-field {
             width: 100%;
-            background: rgba(45, 12, 38, 0.7);
+            background: rgba(32, 10, 26, 0.75);
             border: 1px solid var(--pink-border);
             color: #fff;
-            padding: 12px 16px 12px 42px;
-            border-radius: var(--radius-md);
+            padding: 12px 18px 12px 44px;
+            border-radius: 9999px;
             font-size: 14px;
             outline: none;
-            transition: all 0.25s ease;
+            transition: all 0.25s var(--ease);
         }
 
-        .search-input:focus {
-            border-color: var(--pink-neon);
-            box-shadow: var(--pink-glow-box);
+        .search-field:focus {
+            border-color: var(--pink-primary);
+            box-shadow: var(--pink-glow-sm);
         }
 
-        .search-icon {
+        .search-glyph {
             position: absolute;
-            left: 14px;
+            left: 18px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--pink-muted);
-            font-size: 16px;
+            color: var(--text-muted);
+            font-size: 15px;
         }
 
-        .students-grid {
+        .bento-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 20px;
         }
 
-        .student-card {
-            padding: 20px;
+        .bento-card {
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
             position: relative;
+            transition: transform 0.25s var(--ease), border-color 0.25s var(--ease);
         }
 
-        .student-card-header {
+        .bento-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--pink-border-glow);
+        }
+
+        .bento-header {
             display: flex;
             align-items: center;
             gap: 14px;
         }
 
-        .student-avatar {
-            width: 48px;
-            height: 48px;
+        .bento-avatar {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            background: var(--pink-gradient);
+            background: linear-gradient(135deg, var(--pink-primary), #ec4899);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 20px;
+            font-weight: 800;
             color: #fff;
-            box-shadow: 0 0 12px rgba(236, 72, 153, 0.4);
+            box-shadow: 0 0 16px rgba(255, 42, 133, 0.35);
         }
 
-        .student-header-info h4 {
+        .bento-text h4 {
             font-size: 16px;
             font-weight: 700;
-            color: #fff;
+            color: var(--text-heading);
         }
 
-        .student-header-info p {
+        .bento-text p {
             font-size: 12px;
-            color: var(--pink-muted);
+            color: var(--text-muted);
+            margin-top: 2px;
         }
 
-        .student-meta {
+        .tag-group {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
         }
 
-        .meta-pill {
-            background: rgba(244, 114, 182, 0.12);
-            border: 1px solid rgba(244, 114, 182, 0.25);
-            padding: 4px 10px;
+        .chip {
+            padding: 5px 12px;
             border-radius: 8px;
             font-size: 11px;
-            color: var(--pink-blush);
             font-weight: 600;
+            background: rgba(255, 110, 168, 0.1);
+            border: 1px solid var(--pink-border);
+            color: var(--pink-blush);
         }
 
-        .student-actions {
+        .chip-trained {
+            color: #4ade80;
+            border-color: rgba(34, 197, 94, 0.3);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .bento-footer {
             display: flex;
             justify-content: flex-end;
-            padding-top: 8px;
-            border-top: 1px solid rgba(244, 114, 182, 0.15);
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .btn-icon-danger {
-            background: rgba(225, 29, 72, 0.15);
-            border: 1px solid rgba(225, 29, 72, 0.3);
-            color: #fda4af;
-            padding: 6px 12px;
-            border-radius: 8px;
+        .btn-trash {
+            background: rgba(244, 63, 94, 0.12);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: #fca5c5;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
             font-size: 12px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .btn-icon-danger:hover {
-            background: #e11d48;
+        .btn-trash:hover {
+            background: #f43f8e;
             color: #fff;
         }
 
-        /* ---------------- Tab 3: Registration & Dataset ---------------- */
-        .register-container {
+        /* ---------------- TAB 3: REGISTRATION STUDIO ---------------- */
+        .studio-grid {
             display: grid;
-            grid-template-columns: 1.2fr 1fr;
+            grid-template-columns: 1.25fr 1fr;
             gap: 24px;
         }
 
-        .form-card {
-            padding: 28px;
+        .form-pane {
+            padding: 32px;
         }
 
-        .form-card h2 {
-            font-size: 20px;
+        .pane-header {
+            margin-bottom: 24px;
+        }
+
+        .pane-header h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
             font-weight: 700;
-            margin-bottom: 20px;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            color: var(--text-heading);
+        }
+
+        .pane-header p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 16px;
+            gap: 18px;
+            margin-bottom: 18px;
         }
 
-        .form-group {
+        .input-group {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 7px;
         }
 
-        .form-group label {
+        .input-group label {
             font-size: 12px;
-            font-weight: 600;
-            color: var(--pink-blush);
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.06em;
+            color: var(--pink-blush);
         }
 
-        .form-control {
-            background: rgba(45, 12, 38, 0.7);
+        .custom-input {
+            width: 100%;
+            background: rgba(35, 12, 28, 0.65);
             border: 1px solid var(--pink-border);
             color: #fff;
-            padding: 11px 14px;
+            padding: 12px 16px;
             border-radius: var(--radius-md);
             font-size: 14px;
             outline: none;
-            transition: all 0.25s ease;
+            transition: all 0.25s var(--ease);
         }
 
-        .form-control:focus {
-            border-color: var(--pink-neon);
-            box-shadow: var(--pink-glow-box);
+        .custom-input:focus {
+            border-color: var(--pink-primary);
+            box-shadow: var(--pink-glow-sm);
         }
 
-        /* Snapshot Camera Tool */
-        .capture-card {
-            padding: 28px;
+        /* Snapshot Capture Studio */
+        .camera-studio {
+            padding: 32px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
             align-items: center;
+            gap: 20px;
         }
 
-        .capture-viewport {
+        .studio-preview {
             width: 100%;
-            height: 280px;
-            border-radius: var(--radius-md);
+            height: 300px;
+            border-radius: var(--radius-lg);
             background: #000;
             overflow: hidden;
             position: relative;
             border: 1px solid var(--pink-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         #sample-video {
@@ -684,95 +753,105 @@
             transform: scaleX(-1);
         }
 
-        .capture-stats {
+        .studio-counter {
             display: flex;
+            align-items: center;
+            justify-content: center;
             gap: 16px;
             width: 100%;
-            justify-content: center;
         }
 
-        .progress-box {
-            text-align: center;
-            padding: 12px 20px;
-            background: rgba(65, 17, 53, 0.5);
-            border-radius: var(--radius-md);
+        .counter-badge {
+            background: rgba(45, 14, 36, 0.7);
             border: 1px solid var(--pink-border);
+            padding: 14px 28px;
+            border-radius: var(--radius-lg);
+            text-align: center;
             flex-grow: 1;
         }
 
-        .progress-box h4 {
-            font-size: 22px;
+        .counter-badge h4 {
             font-family: 'Space Grotesk', sans-serif;
-            color: var(--pink-neon);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--pink-primary);
         }
 
-        .progress-box p {
+        .counter-badge p {
             font-size: 11px;
-            color: var(--pink-muted);
             text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            margin-top: 2px;
         }
 
-        /* ---------------- Tab 4: Model Training ---------------- */
-        .training-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 36px;
+        /* ---------------- TAB 4: TRAINING LAB ---------------- */
+        .training-lab {
+            max-width: 820px;
+            margin: 20px auto;
+            padding: 48px;
             text-align: center;
         }
 
-        .training-icon-large {
-            width: 90px;
-            height: 90px;
-            background: var(--pink-gradient);
+        .orb-icon {
+            width: 96px;
+            height: 96px;
             border-radius: 50%;
-            margin: 0 auto 24px;
+            background: linear-gradient(135deg, var(--pink-primary), #d946ef);
+            margin: 0 auto 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            box-shadow: 0 0 35px rgba(244, 63, 94, 0.5);
-            animation: float 3s ease-in-out infinite;
+            font-size: 42px;
+            box-shadow: var(--pink-glow-lg);
+            animation: orbFloat 4s ease-in-out infinite;
         }
 
-        @keyframes float {
+        @keyframes orbFloat {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+            50% { transform: translateY(-10px); }
         }
 
-        .training-container h2 {
-            font-size: 26px;
+        .training-lab h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
             font-weight: 800;
-            font-family: 'Space Grotesk', sans-serif;
-            color: #fff;
+            color: var(--text-heading);
+            letter-spacing: -0.02em;
             margin-bottom: 12px;
         }
 
-        .training-container p {
-            color: var(--pink-muted);
+        .training-lab p {
+            color: var(--text-muted);
             font-size: 15px;
-            max-width: 550px;
-            margin: 0 auto 28px;
             line-height: 1.6;
+            max-width: 580px;
+            margin: 0 auto 32px;
         }
 
-        /* ---------------- Tab 5: Attendance Report Table ---------------- */
-        .report-header {
+        /* ---------------- TAB 5: ATTENDANCE LEDGER ---------------- */
+        .ledger-pane {
+            padding: 28px;
+        }
+
+        .ledger-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
-        .report-header h2 {
+        .ledger-header h3 {
+            font-family: 'Outfit', sans-serif;
             font-size: 20px;
             font-weight: 700;
-            color: #fff;
+            color: var(--text-heading);
         }
 
-        .table-responsive {
-            overflow-x: auto;
-            border-radius: var(--radius-md);
+        .table-wrap {
+            border-radius: var(--radius-lg);
             border: 1px solid var(--pink-border);
+            overflow: hidden;
         }
 
         table {
@@ -782,173 +861,177 @@
         }
 
         th {
-            background: rgba(65, 17, 53, 0.8);
-            padding: 14px 18px;
-            font-size: 12px;
+            background: rgba(38, 12, 30, 0.85);
+            padding: 16px 20px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.08em;
             color: var(--pink-blush);
             border-bottom: 1px solid var(--pink-border);
         }
 
         td {
-            padding: 14px 18px;
+            padding: 16px 20px;
             font-size: 14px;
-            color: #fff;
-            border-bottom: 1px solid rgba(244, 114, 182, 0.12);
+            color: var(--text-heading);
+            border-bottom: 1px solid rgba(255, 110, 168, 0.08);
         }
 
-        tr:hover td {
-            background: rgba(244, 114, 182, 0.08);
+        tbody tr:hover td {
+            background: rgba(255, 42, 133, 0.05);
         }
 
-        /* Toast notifications */
-        #toast-container {
+        /* Floating Notifications */
+        #notification-center {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 999;
+            bottom: 28px;
+            right: 28px;
+            z-index: 99999;
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
-        .toast {
-            background: rgba(38, 10, 31, 0.95);
-            backdrop-filter: blur(20px);
+        .notification {
+            background: rgba(30, 10, 24, 0.96);
             border: 1px solid var(--pink-border-glow);
-            color: #fff;
-            padding: 14px 20px;
+            padding: 14px 22px;
             border-radius: var(--radius-md);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), var(--pink-glow-box);
+            color: #ffffff;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), var(--pink-glow-sm);
             display: flex;
             align-items: center;
             gap: 12px;
             font-size: 14px;
             font-weight: 600;
-            animation: toastIn 0.3s ease;
+            animation: notifyIn 0.3s var(--ease);
         }
 
-        @keyframes toastIn {
+        @keyframes notifyIn {
             from { opacity: 0; transform: translateY(16px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 1024px) {
-            .scanner-grid, .register-container { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            header { flex-direction: column; gap: 14px; }
+            .scanner-layout, .studio-grid { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            nav.navbar { border-radius: var(--radius-lg); flex-direction: column; gap: 14px; }
         }
 
-        @media (max-width: 600px) {
-            .stats-grid { grid-template-columns: 1fr; }
+        @media (max-width: 640px) {
+            .stats-row { grid-template-columns: 1fr; }
             .form-row { grid-template-columns: 1fr; }
+            .tabs-pill { flex-wrap: wrap; justify-content: center; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Top Navigation Header -->
-    <header>
-        <a href="#" class="brand-logo">
-            <div class="brand-icon">✨</div>
-            <div class="brand-text">
-                <h1>FACERA</h1>
-                <p>Facial Attendance AI</p>
+    <!-- Floating Navbar -->
+    <nav class="navbar">
+        <a href="#" class="brand-container">
+            <div class="brand-badge">⚡</div>
+            <div class="brand-titles">
+                <h1>AURA <span>AI STUDIO</span></h1>
             </div>
         </a>
 
-        <div class="nav-tabs">
-            <button class="nav-btn active" onclick="switchTab('scanner')">📷 Live Scanner</button>
-            <button class="nav-btn" onclick="switchTab('students')">👥 Students</button>
-            <button class="nav-btn" onclick="switchTab('register')">➕ Add Student</button>
-            <button class="nav-btn" onclick="switchTab('training')">⚡ AI Training</button>
-            <button class="nav-btn" onclick="switchTab('logs')">📊 Attendance Logs</button>
+        <div class="tabs-pill">
+            <button class="tab-btn active" onclick="switchTab('scanner')">📷 Live Scanner</button>
+            <button class="tab-btn" onclick="switchTab('students')">👥 Students</button>
+            <button class="tab-btn" onclick="switchTab('register')">➕ Add Student</button>
+            <button class="tab-btn" onclick="switchTab('training')">⚡ AI Lab</button>
+            <button class="tab-btn" onclick="switchTab('logs')">📊 Attendance</button>
         </div>
 
-        <div class="system-badge" id="system-badge">
-            <div class="pulse-dot"></div>
+        <div class="status-pill" id="system-badge">
+            <div class="pulse-indicator"></div>
             <span id="badge-text">Model Active</span>
         </div>
-    </header>
+    </nav>
 
     <main>
-        <!-- Top Stats Row -->
-        <div class="stats-grid">
-            <div class="glass-panel stat-card">
-                <div class="stat-info">
-                    <h3 id="stat-students">0</h3>
+        <!-- Top Metrics Overview -->
+        <div class="stats-row">
+            <div class="glass-card stat-box">
+                <div class="stat-numbers">
                     <p>Enrolled Students</p>
+                    <h3 id="stat-students">0</h3>
                 </div>
-                <div class="stat-icon">🎓</div>
+                <div class="stat-icon-wrap">🎓</div>
             </div>
 
-            <div class="glass-panel stat-card">
-                <div class="stat-info">
-                    <h3 id="stat-present">0</h3>
+            <div class="glass-card stat-box">
+                <div class="stat-numbers">
                     <p>Present Today</p>
+                    <h3 id="stat-present">0</h3>
                 </div>
-                <div class="stat-icon">✅</div>
+                <div class="stat-icon-wrap">✨</div>
             </div>
 
-            <div class="glass-panel stat-card">
-                <div class="stat-info">
+            <div class="glass-card stat-box">
+                <div class="stat-numbers">
+                    <p>Dataset Samples</p>
                     <h3 id="stat-samples">0</h3>
-                    <p>Dataset Images</p>
                 </div>
-                <div class="stat-icon">🖼️</div>
+                <div class="stat-icon-wrap">📸</div>
             </div>
 
-            <div class="glass-panel stat-card">
-                <div class="stat-info">
-                    <h3 id="stat-status">READY</h3>
+            <div class="glass-card stat-box">
+                <div class="stat-numbers">
                     <p>LBPH Engine</p>
+                    <h3 id="stat-status">ACTIVE</h3>
                 </div>
-                <div class="stat-icon">⚡</div>
+                <div class="stat-icon-wrap">⚡</div>
             </div>
         </div>
 
         <!-- ---------------- TAB 1: LIVE SCANNER ---------------- -->
-        <div id="tab-scanner" class="tab-panel active">
-            <div class="scanner-grid">
-                <!-- Camera Viewfinder Card -->
-                <div class="glass-panel camera-card">
-                    <div class="camera-header">
-                        <h2><span>🔴</span> Real-time Biometric Face Scanner</h2>
-                        <span id="scanner-status" class="meta-pill">Camera Active (0 fps)</span>
+        <div id="tab-scanner" class="tab-content active">
+            <div class="scanner-layout">
+                <!-- Camera Console -->
+                <div class="glass-card camera-console">
+                    <div class="console-header">
+                        <div class="console-title">
+                            <h2>Biometric Neural Scanner</h2>
+                            <p>Real-time Haar Cascade & LBPH recognition feed</p>
+                        </div>
+                        <span id="scanner-status" class="chip chip-trained">Live Active</span>
                     </div>
 
-                    <div class="viewfinder-wrapper">
+                    <div class="camera-viewfinder">
                         <video id="webcam-video" autoplay playsinline muted></video>
                         <canvas id="overlay-canvas"></canvas>
 
-                        <!-- HUD Corners -->
-                        <div class="hud-corner hud-tl"></div>
-                        <div class="hud-corner hud-tr"></div>
-                        <div class="hud-corner hud-bl"></div>
-                        <div class="hud-corner hud-br"></div>
+                        <!-- Cyberpunk Geometric HUD Brackets -->
+                        <div class="hud-bracket b-top-left"></div>
+                        <div class="hud-bracket b-top-right"></div>
+                        <div class="hud-bracket b-bottom-left"></div>
+                        <div class="hud-bracket b-bottom-right"></div>
 
-                        <!-- Animated Laser Scanner Line -->
-                        <div class="laser-line"></div>
+                        <!-- Neon Rose Scanning Laser -->
+                        <div class="scan-laser"></div>
                     </div>
 
-                    <div class="camera-controls">
-                        <button class="btn" id="btn-toggle-camera" onclick="toggleCamera()">
-                            <span>📷</span> Stop Camera
+                    <div class="camera-footer">
+                        <button class="btn-action" id="btn-toggle-cam" onclick="toggleCamera()">
+                            <span>📷</span> Pause Scanner
                         </button>
-                        <div style="font-size: 13px; color: var(--pink-muted);">
-                            Look directly into camera • Confidence threshold: <strong>> 77%</strong>
+                        <div style="font-size: 13px; color: var(--text-muted);">
+                            Position face within frame • Auto-attendance on <strong style="color: var(--pink-blush);">confidence > 77%</strong>
                         </div>
                     </div>
                 </div>
 
-                <!-- Live Attendance Activity Feed -->
-                <div class="glass-panel activity-card">
-                    <h2><span>⚡</span> Live Attendance Feed</h2>
-                    <div class="attendance-feed" id="live-feed">
-                        <div style="text-align: center; color: var(--pink-muted); padding: 40px 0;">
-                            Waiting for face recognitions...
+                <!-- Live Stream Feed Sidebar -->
+                <div class="glass-card feed-card">
+                    <div class="feed-card-header">
+                        <h3>⚡ Live Attendance Ledger</h3>
+                    </div>
+                    <div class="feed-list" id="live-feed">
+                        <div style="text-align: center; color: var(--text-muted); padding: 60px 0; font-size: 14px;">
+                            Waiting for face detections...
                         </div>
                     </div>
                 </div>
@@ -956,46 +1039,50 @@
         </div>
 
         <!-- ---------------- TAB 2: STUDENTS DIRECTORY ---------------- -->
-        <div id="tab-students" class="tab-panel">
-            <div class="directory-header">
-                <div class="search-box">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" class="search-input" id="student-search" placeholder="Search student by name, roll no, or ID..." oninput="filterStudents()">
+        <div id="tab-students" class="tab-content">
+            <div class="toolbar">
+                <div class="search-pill">
+                    <span class="search-glyph">🔍</span>
+                    <input type="text" class="search-field" id="student-search" placeholder="Search by name, student ID, or roll number..." oninput="filterStudents()">
                 </div>
-                <button class="btn" onclick="switchTab('register')">➕ Register New Student</button>
+                <button class="btn-action" onclick="switchTab('register')">➕ Register Student</button>
             </div>
 
-            <div class="students-grid" id="students-grid">
-                <!-- Dynamically populated student cards -->
+            <div class="bento-grid" id="students-grid">
+                <!-- Injected student cards -->
             </div>
         </div>
 
-        <!-- ---------------- TAB 3: REGISTER STUDENT & CAPTURE ---------------- -->
-        <div id="tab-register" class="tab-panel">
-            <div class="register-container">
-                <!-- Student Details Form -->
-                <div class="glass-panel form-card">
-                    <h2><span>📝</span> Student Registration</h2>
+        <!-- ---------------- TAB 3: REGISTRATION STUDIO ---------------- -->
+        <div id="tab-register" class="tab-content">
+            <div class="studio-grid">
+                <!-- Registration Form -->
+                <div class="glass-card form-pane">
+                    <div class="pane-header">
+                        <h3>New Student Enrollment</h3>
+                        <p>Fill profile parameters before taking biometric dataset photos</p>
+                    </div>
+
                     <form id="student-form" onsubmit="submitStudent(event)">
                         <div class="form-row">
-                            <div class="form-group">
+                            <div class="input-group">
                                 <label>Student ID</label>
-                                <input type="text" id="reg-id" class="form-control" placeholder="e.g. 101" required>
+                                <input type="text" id="reg-id" class="custom-input" placeholder="e.g. 101" required>
                             </div>
-                            <div class="form-group">
+                            <div class="input-group">
                                 <label>Full Name</label>
-                                <input type="text" id="reg-name" class="form-control" placeholder="e.g. Rudrani Sarkar" required>
+                                <input type="text" id="reg-name" class="custom-input" placeholder="e.g. Rudrani Sarkar" required>
                             </div>
                         </div>
 
                         <div class="form-row">
-                            <div class="form-group">
+                            <div class="input-group">
                                 <label>Roll Number</label>
-                                <input type="text" id="reg-roll" class="form-control" placeholder="e.g. R2021001" required>
+                                <input type="text" id="reg-roll" class="custom-input" placeholder="e.g. R2021001" required>
                             </div>
-                            <div class="form-group">
+                            <div class="input-group">
                                 <label>Department</label>
-                                <select id="reg-dept" class="form-control">
+                                <select id="reg-dept" class="custom-input">
                                     <option value="SCSE">SCSE (Computer Science)</option>
                                     <option value="SEEE">SEEE (Electrical)</option>
                                     <option value="SME">SME (Mechanical)</option>
@@ -1005,18 +1092,18 @@
                         </div>
 
                         <div class="form-row">
-                            <div class="form-group">
+                            <div class="input-group">
                                 <label>Course</label>
-                                <select id="reg-course" class="form-control">
+                                <select id="reg-course" class="custom-input">
                                     <option value="Btech">B.Tech</option>
                                     <option value="Mtech">M.Tech</option>
                                     <option value="BSC">B.Sc</option>
                                     <option value="MSC">M.Sc</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label>Year</label>
-                                <select id="reg-year" class="form-control">
+                            <div class="input-group">
+                                <label>Year Batch</label>
+                                <select id="reg-year" class="custom-input">
                                     <option value="2021-25">2021-25</option>
                                     <option value="2022-26">2022-26</option>
                                     <option value="2023-27">2023-27</option>
@@ -1025,97 +1112,100 @@
                         </div>
 
                         <div class="form-row">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" id="reg-email" class="form-control" placeholder="student@example.com">
+                            <div class="input-group">
+                                <label>Email Address</label>
+                                <input type="email" id="reg-email" class="custom-input" placeholder="student@example.com">
                             </div>
-                            <div class="form-group">
-                                <label>Mobile No</label>
-                                <input type="tel" id="reg-mobile" class="form-control" placeholder="9876543210">
+                            <div class="input-group">
+                                <label>Mobile Phone</label>
+                                <input type="tel" id="reg-mobile" class="custom-input" placeholder="9876543210">
                             </div>
                         </div>
 
-                        <button type="submit" class="btn" style="width: 100%; margin-top: 8px;">
-                            <span>💾</span> Save Student Record
+                        <button type="submit" class="btn-action" style="width: 100%; margin-top: 10px;">
+                            <span>💾</span> Save Student Profile
                         </button>
                     </form>
                 </div>
 
-                <!-- Instant Webcam Face Capture Tool -->
-                <div class="glass-panel capture-card">
-                    <h2 style="font-size: 18px; font-weight: 700; color: #fff;">📸 Face Dataset Collector</h2>
-                    <p style="font-size: 13px; color: var(--pink-muted); text-align: center;">
-                        Capture face sample photos for the selected Student ID to train the AI model.
-                    </p>
+                <!-- Instant Camera Capture Studio -->
+                <div class="glass-card camera-studio">
+                    <div class="pane-header" style="text-align: center; margin-bottom: 0;">
+                        <h3>Biometric Studio</h3>
+                        <p>Capture face samples for the entered Student ID</p>
+                    </div>
 
-                    <div class="capture-viewport">
+                    <div class="studio-preview">
                         <video id="sample-video" autoplay playsinline muted></video>
                     </div>
 
-                    <div class="capture-stats">
-                        <div class="progress-box">
+                    <div class="studio-counter">
+                        <div class="counter-badge">
                             <h4 id="sample-count">0</h4>
                             <p>Captured Samples</p>
                         </div>
                     </div>
 
-                    <div style="display: flex; gap: 12px; width: 100%;">
-                        <button class="btn btn-secondary" onclick="captureSamplePhoto()" style="flex: 1;">
-                            <span>📷</span> Snap Sample
+                    <div style="display: flex; gap: 14px; width: 100%;">
+                        <button class="btn-ghost" onclick="captureSamplePhoto()" style="flex: 1;">
+                            <span>📸</span> Snap Sample
                         </button>
-                        <button class="btn" onclick="startBatchCapture()" id="btn-batch-capture" style="flex: 1;">
-                            <span>⚡</span> Auto Burst (10x)
+                        <button class="btn-action" onclick="startBatchCapture()" id="btn-batch-capture" style="flex: 1;">
+                            <span>⚡</span> Burst Mode (10x)
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ---------------- TAB 4: MODEL TRAINING ---------------- -->
-        <div id="tab-training" class="tab-panel">
-            <div class="glass-panel training-container">
-                <div class="training-icon-large">⚡</div>
-                <h2>LBPH Facial Model Retraining</h2>
+        <!-- ---------------- TAB 4: TRAINING LAB ---------------- -->
+        <div id="tab-training" class="tab-content">
+            <div class="glass-card training-lab">
+                <div class="orb-icon">⚡</div>
+                <h2>Neural Histogram Training Lab</h2>
                 <p>
-                    Re-fit the Local Binary Patterns Histograms (LBPH) classifier on all face samples in the dataset. 
-                    This compiles new student face structures into <strong>clf.xml</strong>.
+                    Train the Local Binary Patterns Histograms (LBPH) classifier on all face crops in the dataset directory. 
+                    This compiles features into the production <strong>clf.xml</strong> model used by both the cloud web app and desktop interface.
                 </p>
 
-                <button class="btn" id="btn-train-model" onclick="triggerRetrain()" style="padding: 16px 36px; font-size: 16px;">
-                    <span>🚀</span> Start AI Model Training
+                <button class="btn-action" id="btn-train-model" onclick="triggerRetrain()" style="padding: 16px 40px; font-size: 16px;">
+                    <span>🚀</span> Train LBPH Neural Model
                 </button>
 
-                <div id="training-progress" style="display: none; margin-top: 24px; color: var(--pink-hot); font-weight: 600;">
-                    Training in progress, processing facial histograms...
+                <div id="training-spinner" style="display: none; margin-top: 24px; color: var(--pink-coral); font-weight: 600;">
+                    Training in progress... compiling facial histograms...
                 </div>
             </div>
         </div>
 
-        <!-- ---------------- TAB 5: ATTENDANCE LOGS ---------------- -->
-        <div id="tab-logs" class="tab-panel">
-            <div class="glass-panel" style="padding: 24px;">
-                <div class="report-header">
-                    <h2><span>📊</span> Attendance Records</h2>
+        <!-- ---------------- TAB 5: ATTENDANCE LEDGER ---------------- -->
+        <div id="tab-logs" class="tab-content">
+            <div class="glass-card ledger-pane">
+                <div class="ledger-header">
+                    <div>
+                        <h3>Biometric Attendance Ledger</h3>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">Synchronized across cloud CSV and local database</p>
+                    </div>
                     <div style="display: flex; gap: 12px;">
-                        <button class="btn btn-secondary" onclick="loadAttendanceLogs()">🔄 Refresh</button>
-                        <a href="/api/export_csv" class="btn">📥 Export to CSV</a>
+                        <button class="btn-ghost" onclick="loadAttendanceLogs()">🔄 Refresh</button>
+                        <a href="/api/export_csv" class="btn-action">📥 Export CSV</a>
                     </div>
                 </div>
 
-                <div class="table-responsive">
+                <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
                                 <th>Student ID</th>
                                 <th>Roll Number</th>
-                                <th>Name</th>
+                                <th>Full Name</th>
                                 <th>Time</th>
                                 <th>Date</th>
-                                <th>Status</th>
+                                <th>Verification</th>
                             </tr>
                         </thead>
                         <tbody id="attendance-table-body">
-                            <!-- Dynamically loaded rows -->
+                            <!-- Injected attendance rows -->
                         </tbody>
                     </table>
                 </div>
@@ -1123,8 +1213,8 @@
         </div>
     </main>
 
-    <!-- Floating Toast Notifications -->
-    <div id="toast-container"></div>
+    <!-- Floating System Notifications -->
+    <div id="notification-center"></div>
 
     <script>
         let videoStream = null;
@@ -1148,37 +1238,35 @@
                 gain.connect(ctx.destination);
                 osc.start();
                 osc.stop(ctx.currentTime + 0.35);
-            } catch (e) {
-                // AudioContext blocked before interaction
-            }
+            } catch (e) {}
         }
 
-        function showToast(msg, isSuccess = true) {
-            const container = document.getElementById("toast-container");
-            const toast = document.createElement("div");
-            toast.className = "toast";
-            toast.innerHTML = `<span>${isSuccess ? '✨' : '⚠️'}</span> <span>${msg}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
+        function showNotification(msg, isSuccess = true) {
+            const container = document.getElementById("notification-center");
+            const item = document.createElement("div");
+            item.className = "notification";
+            item.innerHTML = `<span>${isSuccess ? '✨' : '⚠️'}</span> <span>${msg}</span>`;
+            container.appendChild(item);
+            setTimeout(() => item.remove(), 4000);
         }
 
-        // Tab Navigation
+        // Tab Switcher
         function switchTab(tabId) {
-            document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
-            document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
-            
-            const targetBtn = Array.from(document.querySelectorAll(".nav-btn")).find(b => b.getAttribute("onclick").includes(tabId));
+            document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+            document.querySelectorAll(".tab-content").forEach(panel => panel.classList.remove("active"));
+
+            const targetBtn = Array.from(document.querySelectorAll(".tab-btn")).find(b => b.getAttribute("onclick").includes(tabId));
             if (targetBtn) targetBtn.classList.add("active");
-            
-            const panel = document.getElementById(`tab-${tabId}`);
-            if (panel) panel.classList.add("active");
+
+            const targetPanel = document.getElementById(`tab-${tabId}`);
+            if (targetPanel) targetPanel.classList.add("active");
 
             if (tabId === "students") loadStudents();
             if (tabId === "logs") loadAttendanceLogs();
             if (tabId === "register") initSampleCamera();
         }
 
-        // Initialize Webcam for Live Scanner
+        // Webcam Setup
         async function initCamera() {
             const video = document.getElementById("webcam-video");
             try {
@@ -1188,8 +1276,9 @@
                 video.srcObject = videoStream;
                 startScanning();
             } catch (err) {
-                showToast("Could not access camera: " + err.message, false);
+                showNotification("Camera access blocked: " + err.message, false);
                 document.getElementById("scanner-status").textContent = "Camera Blocked";
+                document.getElementById("scanner-status").style.color = "#f43f8e";
             }
         }
 
@@ -1206,19 +1295,21 @@
         }
 
         function toggleCamera() {
-            const btn = document.getElementById("btn-toggle-camera");
+            const btn = document.getElementById("btn-toggle-cam");
             if (isScannerRunning) {
                 clearInterval(scanInterval);
                 isScannerRunning = false;
-                btn.innerHTML = "<span>▶️</span> Start Camera";
-                btn.classList.add("btn-secondary");
-                document.getElementById("scanner-status").textContent = "Camera Paused";
+                btn.innerHTML = "<span>▶️</span> Resume Scanner";
+                btn.classList.add("btn-ghost");
+                btn.classList.remove("btn-action");
+                document.getElementById("scanner-status").textContent = "Scanner Paused";
             } else {
                 startScanning();
                 isScannerRunning = true;
-                btn.innerHTML = "<span>📷</span> Stop Camera";
-                btn.classList.remove("btn-secondary");
-                document.getElementById("scanner-status").textContent = "Camera Active";
+                btn.innerHTML = "<span>📷</span> Pause Scanner";
+                btn.classList.remove("btn-ghost");
+                btn.classList.add("btn-action");
+                document.getElementById("scanner-status").textContent = "Live Active";
             }
         }
 
@@ -1234,7 +1325,6 @@
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
 
-                // Capture snapshot for API
                 const offscreen = document.createElement("canvas");
                 offscreen.width = video.videoWidth;
                 offscreen.height = video.videoHeight;
@@ -1258,34 +1348,32 @@
                         result.faces.forEach(face => {
                             const [x, y, w, h] = face.box;
 
-                            // Draw glowing box
+                            // Draw futuristic rounded bounding box
                             ctx.lineWidth = 3;
                             ctx.strokeStyle = face.recognized ? "#4ade80" : "#ff2a85";
                             ctx.shadowColor = face.recognized ? "#4ade80" : "#ff2a85";
-                            ctx.shadowBlur = 12;
+                            ctx.shadowBlur = 14;
                             ctx.strokeRect(x, y, w, h);
 
-                            // Label background
-                            ctx.fillStyle = face.recognized ? "rgba(34, 197, 94, 0.85)" : "rgba(225, 29, 72, 0.85)";
-                            ctx.fillRect(x, y - 30, w, 30);
+                            // Label ribbon
+                            ctx.fillStyle = face.recognized ? "rgba(34, 197, 94, 0.9)" : "rgba(244, 63, 142, 0.9)";
+                            ctx.fillRect(x, y - 32, w, 32);
 
-                            // Text
                             ctx.shadowBlur = 0;
                             ctx.fillStyle = "#ffffff";
                             ctx.font = "bold 13px 'Plus Jakarta Sans'";
                             const label = face.recognized ? `${face.name} (${face.confidence}%)` : "Unknown Face";
-                            ctx.fillText(label, x + 8, y - 10);
+                            ctx.fillText(label, x + 10, y - 10);
 
                             if (face.new_attendance_marked) {
                                 playChime();
-                                showToast(`Attendance marked for ${face.name}!`);
+                                showNotification(`Attendance logged for ${face.name}!`);
                                 addFeedItem(face.name, face.student_id, face.time);
                                 updateSystemStats();
                             }
                         });
                     }
                 } catch (e) {
-                    // Ignore frame drop
                 } finally {
                     isProcessingFrame = false;
                 }
@@ -1298,26 +1386,26 @@
 
             const initial = name.charAt(0).toUpperCase();
             const item = document.createElement("div");
-            item.className = "feed-item";
+            item.className = "log-entry";
             item.innerHTML = `
-                <div class="feed-avatar">${initial}</div>
-                <div class="feed-details">
-                    <h4>${name}</h4>
+                <div class="entry-avatar">${initial}</div>
+                <div class="entry-info">
+                    <h5>${name}</h5>
                     <p>Student ID: ${id} • ${time || 'Just now'}</p>
                 </div>
-                <span class="feed-badge">PRESENT</span>
+                <span class="badge-verified">VERIFIED</span>
             `;
             feed.insertBefore(item, feed.firstChild);
         }
 
-        // Students Management
+        // Students Directory
         async function loadStudents() {
             try {
                 const res = await fetch("/api/students");
                 allStudents = await res.json();
                 renderStudents(allStudents);
             } catch (e) {
-                showToast("Failed to load students", false);
+                showNotification("Could not fetch students", false);
             }
         }
 
@@ -1326,32 +1414,32 @@
             grid.innerHTML = "";
 
             if (!list || list.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--pink-muted); padding: 40px;">No students enrolled yet.</div>`;
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 50px;">No registered students yet.</div>`;
                 return;
             }
 
             list.forEach(std => {
                 const initial = std.name.charAt(0).toUpperCase();
                 const card = document.createElement("div");
-                card.className = "glass-panel student-card";
+                card.className = "glass-card bento-card";
                 card.innerHTML = `
-                    <div class="student-card-header">
-                        <div class="student-avatar">${initial}</div>
-                        <div class="student-header-info">
+                    <div class="bento-header">
+                        <div class="bento-avatar">${initial}</div>
+                        <div class="bento-text">
                             <h4>${std.name}</h4>
                             <p>ID: ${std.id} • Roll: ${std.roll_no}</p>
                         </div>
                     </div>
-                    <div class="student-meta">
-                        <span class="meta-pill">${std.department}</span>
-                        <span class="meta-pill">${std.course}</span>
-                        <span class="meta-pill">${std.year}</span>
-                        <span class="meta-pill" style="color: ${std.photo_sample === 'Yes' ? '#4ade80' : '#f43f5e'}">
-                            ${std.photo_sample === 'Yes' ? '✓ Trained' : 'No Photos'}
+                    <div class="tag-group">
+                        <span class="chip">${std.department}</span>
+                        <span class="chip">${std.course}</span>
+                        <span class="chip">${std.year}</span>
+                        <span class="chip ${std.photo_sample === 'Yes' ? 'chip-trained' : ''}">
+                            ${std.photo_sample === 'Yes' ? '✓ Trained' : 'No Dataset'}
                         </span>
                     </div>
-                    <div class="student-actions">
-                        <button class="btn-icon-danger" onclick="deleteStudent('${std.id}')">Delete</button>
+                    <div class="bento-footer">
+                        <button class="btn-trash" onclick="deleteStudent('${std.id}')">Delete</button>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -1359,11 +1447,11 @@
         }
 
         function filterStudents() {
-            const query = document.getElementById("student-search").value.toLowerCase();
+            const q = document.getElementById("student-search").value.toLowerCase();
             const filtered = allStudents.filter(s => 
-                s.name.toLowerCase().includes(query) ||
-                s.roll_no.toLowerCase().includes(query) ||
-                s.id.toLowerCase().includes(query)
+                s.name.toLowerCase().includes(q) ||
+                s.roll_no.toLowerCase().includes(q) ||
+                s.id.toLowerCase().includes(q)
             );
             renderStudents(filtered);
         }
@@ -1389,37 +1477,37 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    showToast(data.message);
+                    showNotification(data.message);
                     document.getElementById("student-form").reset();
                     updateSystemStats();
                 } else {
-                    showToast(data.error, false);
+                    showNotification(data.error, false);
                 }
             } catch (err) {
-                showToast("Error saving student: " + err.message, false);
+                showNotification("Registration failed: " + err.message, false);
             }
         }
 
         async function deleteStudent(stdId) {
-            if (!confirm(`Are you sure you want to delete student ${stdId}?`)) return;
+            if (!confirm(`Permanently remove student ID ${stdId}?`)) return;
             try {
                 const res = await fetch(`/api/students/${stdId}`, { method: "DELETE" });
                 const data = await res.json();
                 if (data.success) {
-                    showToast(data.message);
+                    showNotification(data.message);
                     loadStudents();
                     updateSystemStats();
                 }
             } catch (e) {
-                showToast("Failed to delete", false);
+                showNotification("Delete request failed", false);
             }
         }
 
-        // Photo Sample Capture
+        // Snapshot Sampling Tool
         async function captureSamplePhoto() {
             const stdId = document.getElementById("reg-id").value.trim();
             if (!stdId) {
-                showToast("Please enter a Student ID first!", false);
+                showNotification("Please enter Student ID above first!", false);
                 return;
             }
 
@@ -1441,54 +1529,54 @@
                 const data = await res.json();
                 if (data.success) {
                     document.getElementById("sample-count").textContent = data.sample_num;
-                    showToast(data.message);
+                    showNotification(data.message);
                     updateSystemStats();
                 } else {
-                    showToast(data.error, false);
+                    showNotification(data.error, false);
                 }
             } catch (err) {
-                showToast("Capture failed: " + err.message, false);
+                showNotification("Sample capture failed: " + err.message, false);
             }
         }
 
         async function startBatchCapture() {
             const stdId = document.getElementById("reg-id").value.trim();
             if (!stdId) {
-                showToast("Please enter a Student ID first!", false);
+                showNotification("Please enter Student ID above first!", false);
                 return;
             }
-            showToast("Starting burst capture (10 samples)...");
+            showNotification("Taking burst sequence (10 samples)...");
             for (let i = 0; i < 10; i++) {
                 await captureSamplePhoto();
-                await new Promise(r => setTimeout(r, 400));
+                await new Promise(r => setTimeout(r, 350));
             }
         }
 
-        // Model Retraining
+        // Model Retrain
         async function triggerRetrain() {
             const btn = document.getElementById("btn-train-model");
-            const prog = document.getElementById("training-progress");
+            const spin = document.getElementById("training-spinner");
             btn.disabled = true;
-            prog.style.display = "block";
+            spin.style.display = "block";
 
             try {
                 const res = await fetch("/api/train", { method: "POST" });
                 const data = await res.json();
                 if (data.success) {
-                    showToast(data.message);
+                    showNotification(data.message);
                     updateSystemStats();
                 } else {
-                    showToast(data.error, false);
+                    showNotification(data.error, false);
                 }
             } catch (e) {
-                showToast("Training error: " + e.message, false);
+                showNotification("Retrain error: " + e.message, false);
             } finally {
                 btn.disabled = false;
-                prog.style.display = "none";
+                spin.style.display = "none";
             }
         }
 
-        // Attendance Log Table
+        // Attendance Ledger
         async function loadAttendanceLogs() {
             try {
                 const res = await fetch("/api/attendance");
@@ -1497,7 +1585,7 @@
                 tbody.innerHTML = "";
 
                 if (!logs || logs.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--pink-muted); padding: 30px;">No attendance logged yet.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted); padding: 40px;">No attendance logged yet.</td></tr>`;
                     return;
                 }
 
@@ -1509,16 +1597,16 @@
                         <td>${log.name}</td>
                         <td>${log.time}</td>
                         <td>${log.date}</td>
-                        <td><span class="feed-badge">${log.status}</span></td>
+                        <td><span class="badge-verified">${log.status}</span></td>
                     `;
                     tbody.appendChild(tr);
                 });
             } catch (e) {
-                showToast("Failed to load logs", false);
+                showNotification("Failed to load logs", false);
             }
         }
 
-        // System Stats
+        // Live Metrics
         async function updateSystemStats() {
             try {
                 const res = await fetch("/api/status");
@@ -1526,19 +1614,13 @@
                 document.getElementById("stat-students").textContent = data.total_students;
                 document.getElementById("stat-present").textContent = data.present_today;
                 document.getElementById("stat-samples").textContent = data.total_samples;
-                document.getElementById("stat-status").textContent = data.model_loaded ? "READY" : "NO MODEL";
+                document.getElementById("stat-status").textContent = data.model_loaded ? "ACTIVE" : "STANDBY";
 
-                const badge = document.getElementById("system-badge");
                 const badgeText = document.getElementById("badge-text");
-                if (data.model_loaded) {
-                    badgeText.textContent = "AI Model Ready";
-                } else {
-                    badgeText.textContent = "Model Training Needed";
-                }
+                badgeText.textContent = data.model_loaded ? "Model Ready" : "Retrain Required";
             } catch (e) {}
         }
 
-        // Initialize on Load
         window.addEventListener("DOMContentLoaded", () => {
             initCamera();
             updateSystemStats();
