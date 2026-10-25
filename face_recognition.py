@@ -132,18 +132,25 @@ class Face_Recognition:
             features = faceCascade.detectMultiScale(gray_image, scaleFactor=1.1, minNeighbors=10)
 
             for (x, y, w, h) in features:
-                predicted_id, predict_conf = clf.predict(gray_image[y:y+h, x:x+w])
+                face_crop = gray_image[y:y+h, x:x+w]
+                face_crop = cv2.resize(face_crop, (200, 200))
+                face_crop = cv2.equalizeHist(face_crop)
+                predicted_id, predict_conf = clf.predict(face_crop)
                 confidence = int(100 * (1 - predict_conf / 300))
 
                 std_id_str = str(predicted_id)
-                student_info = student_cache.get(std_id_str)
+                student_info = student_cache.get(std_id_str) or student_cache.get(str(int(predicted_id)) if std_id_str.isdigit() else std_id_str)
 
-                if confidence > 77 and student_info is not None:
-                    roll_no, name = student_info
+                if confidence >= 65:
+                    if student_info is not None:
+                        roll_no, name = student_info
+                    else:
+                        roll_no = f"ID: {std_id_str}"
+                        name = f"Student #{std_id_str}"
                     cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
                     cv2.putText(img, f"ID: {std_id_str}", (x, y-55), cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
                     cv2.putText(img, f"Name: {name}", (x, y-30), cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
-                    cv2.putText(img, f"Roll: {roll_no}", (x, y-5), cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
+                    cv2.putText(img, f"Roll: {roll_no} ({confidence}%)", (x, y-5), cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
                     self.mark_attendance(std_id_str, roll_no, name)
                 else:
                     cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 2)

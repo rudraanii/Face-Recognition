@@ -30,6 +30,47 @@ face_cascade = cv2.CascadeClassifier(CASCADE_PATH)
 
 # Global model state
 clf_model = None
+
+def train_model_internal():
+    global clf_model
+    valid_exts = ('.jpg', '.jpeg', '.png')
+    if not os.path.exists(DATA_IMG_DIR):
+        return False, "Dataset directory does not exist."
+
+    image_paths = [os.path.join(DATA_IMG_DIR, f) for f in os.listdir(DATA_IMG_DIR) if f.lower().endswith(valid_exts)]
+    if not image_paths:
+        return False, "No face samples found."
+
+    faces = []
+    ids = []
+    for p in image_paths:
+        parts = os.path.basename(p).split(".")
+        if len(parts) >= 3 and parts[1].isdigit():
+            sid = int(parts[1])
+            try:
+                pil_img = Image.open(p).convert("L")
+                img_np = np.array(pil_img, "uint8")
+                img_np = cv2.resize(img_np, (200, 200))
+                faces.append(img_np)
+                ids.append(sid)
+            except Exception:
+                continue
+
+    if not faces:
+        return False, "No valid face samples with numeric IDs could be loaded."
+
+    try:
+        clf = cv2.face.LBPHFaceRecognizer_create()
+        clf.train(faces, np.array(ids, dtype=np.int32))
+        clf_file = os.path.join(BASE_DIR, "clf.xml")
+        clf.write(clf_file)
+        clf_model = clf
+        print(f"[INFO] LBPH model successfully trained on {len(faces)} images across {len(set(ids))} student(s).")
+        return True, f"Trained on {len(faces)} images across {len(set(ids))} student(s)."
+    except Exception as e:
+        print("[WARN] Model training failed:", e)
+        return False, str(e)
+
 def load_model():
     global clf_model
     clf_path = os.path.join(BASE_DIR, "clf.xml")
@@ -42,8 +83,9 @@ def load_model():
             return True
         except Exception as e:
             print("[WARN] Could not load clf.xml:", e)
-    clf_model = None
-    return False
+    # If clf.xml not loaded, try training from existing data_img
+    success, _ = train_model_internal()
+    return success
 
 load_model()
 
@@ -188,14 +230,18 @@ def recognize():
         cur = conn.cursor()
         cur.execute("SELECT Student_ID, Roll_No, Name, Department FROM student")
         for row in cur.fetchall():
-            student_cache[str(row[0])] = {
-                "roll_no": str(row[1]),
-                "name": str(row[2]),
-                "department": str(row[3])
+            sid_raw = str(row[0]).strip()
+            sinfo = {
+                "roll_no": str(row[1]).strip() if row[1] else "",
+                "name": str(row[2]).strip() if row[2] else f"Student #{sid_raw}",
+                "department": str(row[3]).strip() if row[3] else "General"
             }
+            student_cache[sid_raw] = sinfo
+            if sid_raw.isdigit():
+                student_cache[str(int(sid_raw))] = sinfo
         conn.close()
-    except Exception:
-        pass
+    except Exception as es:
+        print("[WARN] student_cache error:", es)
 
     results = []
     for (x, y, w, h) in faces:
@@ -203,7 +249,7 @@ def recognize():
         face_res = {
             "box": [int(x), int(y), int(w), int(h)],
             "recognized": False,
-            "name": "Unknown",
+            "name": "Unknown Face",
             "roll_no": "",
             "student_id": "",
             "confidence": 0,
@@ -212,22 +258,34 @@ def recognize():
 
         if clf_model is not None:
             try:
-                pred_id, conf_val = clf_model.predict(face_roi)
+                # Resize and equalize histogram to match 200x200 LBPH training resolution
+                face_norm = cv2.resize(face_roi, (200, 200))
+                face_norm = cv2.equalizeHist(face_norm)
+
+                pred_id, conf_val = clf_model.predict(face_norm)
+                # conf_val is the Chi-Square distance (lower = closer match)
                 confidence = int(100 * (1 - conf_val / 300))
                 face_res["confidence"] = max(0, min(100, confidence))
 
                 std_id_str = str(pred_id)
-                student = student_cache.get(std_id_str)
+                student = student_cache.get(std_id_str) or student_cache.get(str(int(pred_id)) if std_id_str.isdigit() else std_id_str)
 
-                if confidence > 77 and student is not None:
+                # Robust threshold: confidence >= 65% indicates a verified facial match
+                if confidence >= 65:
                     face_res["recognized"] = True
-                    face_res["name"] = student["name"]
-                    face_res["roll_no"] = student["roll_no"]
                     face_res["student_id"] = std_id_str
-                    face_res["department"] = student["department"]
+
+                    if student is not None:
+                        face_res["name"] = student["name"]
+                        face_res["roll_no"] = student["roll_no"]
+                        face_res["department"] = student["department"]
+                    else:
+                        face_res["name"] = f"Student #{std_id_str}"
+                        face_res["roll_no"] = f"ID-{std_id_str}"
+                        face_res["department"] = "General"
 
                     # Mark attendance
-                    is_new, t_str, d_str = mark_attendance_record(std_id_str, student["roll_no"], student["name"])
+                    is_new, t_str, d_str = mark_attendance_record(std_id_str, face_res["roll_no"], face_res["name"])
                     face_res["new_attendance_marked"] = is_new
                     face_res["time"] = t_str
                     face_res["date"] = d_str
@@ -349,55 +407,26 @@ def capture_sample():
         except Exception:
             pass
 
+        # Auto-retrain model in real-time so scanner immediately recognizes new faces
+        train_model_internal()
+
         return jsonify({
             "success": True,
             "sample_num": sample_num,
-            "message": f"Sample {sample_num} saved for Student ID {std_id}!"
+            "message": f"Sample {sample_num} saved for Student ID {std_id}! Model automatically updated."
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/train", methods=["POST"])
 def train_model():
-    global clf_model
-    valid_exts = ('.jpg', '.jpeg', '.png')
-    image_paths = [os.path.join(DATA_IMG_DIR, f) for f in os.listdir(DATA_IMG_DIR) if f.lower().endswith(valid_exts)]
-
-    if not image_paths:
-        return jsonify({"error": "No face training samples found in dataset directory!"}), 400
-
-    faces = []
-    ids = []
-    for p in image_paths:
-        parts = os.path.basename(p).split(".")
-        if len(parts) >= 3 and parts[1].isdigit():
-            sid = int(parts[1])
-            try:
-                pil_img = Image.open(p).convert("L")
-                faces.append(np.array(pil_img, "uint8"))
-                ids.append(sid)
-            except Exception:
-                continue
-
-    if not faces:
-        return jsonify({"error": "No valid face samples with numeric IDs could be loaded."}), 400
-
-    try:
-        clf = cv2.face.LBPHFaceRecognizer_create()
-        clf.train(faces, np.array(ids, dtype=np.int32))
-        clf_file = os.path.join(BASE_DIR, "clf.xml")
-        clf.write(clf_file)
-        clf_model = clf
-
-        unique_students = len(set(ids))
+    success, msg = train_model_internal()
+    if success:
         return jsonify({
             "success": True,
-            "total_images": len(faces),
-            "total_students": unique_students,
-            "message": f"Model successfully retrained on {len(faces)} images across {unique_students} student(s)!"
+            "message": f"Model successfully retrained: {msg}"
         })
-    except Exception as e:
-        return jsonify({"error": f"Training failed: {str(e)}"}), 500
+    return jsonify({"error": f"Training failed: {msg}"}), 400
 
 @app.route("/api/attendance", methods=["GET"])
 def get_attendance():

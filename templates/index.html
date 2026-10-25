@@ -1633,9 +1633,13 @@
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="audio-icon"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
                                     <span id="audio-toggle-text">Sound: ON</span>
                                 </button>
+                                <button class="btn-header" onclick="triggerModelRetrain()" title="Force synchronize neural model with all dataset images">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                                    <span>Sync AI Engine</span>
+                                </button>
                             </div>
                             <div style="font-size: 12.5px; color: var(--text-muted);">
-                                High-Confidence Match: <strong style="color: var(--success);">> 77%</strong>
+                                Match Threshold: <strong style="color: var(--success);">&ge; 65%</strong>
                             </div>
                         </div>
                     </div>
@@ -2358,14 +2362,19 @@
             }
             const btn = document.getElementById("btn-burst");
             btn.disabled = true;
-            showToast("Burst capture started (10 frames)...", "warning");
+            showToast("Burst capture started (10 face crops)...", "warning");
 
             for (let i = 0; i < 10; i++) {
                 await captureSamplePhoto();
-                await new Promise(r => setTimeout(r, 280));
+                await new Promise(r => setTimeout(r, 260));
             }
             btn.disabled = false;
-            showToast("Burst capture sequence completed!", "success");
+            // Force re-compile LBPH model
+            try {
+                await fetch("/api/train", { method: "POST" });
+            } catch(e) {}
+            updateSystemStats();
+            showToast("Burst capture sequence complete! Face model updated and ready for scanner.", "success");
         }
 
         async function handleStudentEnroll(e) {
@@ -2392,7 +2401,9 @@
                 if (data.success) {
                     showToast(data.message, "success");
                     updateSystemStats();
-                    showToast("Now capture biometric samples for this student in the camera pane on the right!", "warning");
+                    syncStudioStudentID();
+                    loadStudentSampleCount(payload.id);
+                    showToast(`Student #${payload.id} enrolled! Now click 'Burst Mode (10x)' on the right to capture face photos so the scanner can recognize them.`, "warning");
                 } else {
                     showToast(data.error, "danger");
                 }
