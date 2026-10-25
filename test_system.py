@@ -157,6 +157,71 @@ def run_tests():
             errors.append(f"Module '{mod}' import failed: {e}")
             print(f"  [FAIL] Module '{mod}': {e}")
 
+    # 6. Enrolled-student attendance and sample capture enforcement
+    print("\n[TEST 6] Verifying Enrolled Student Attendance & Sample Rules...")
+    try:
+        from app import mark_attendance_record
+        from face_recognition import Face_Recognition
+
+        # 6a. Non-enrolled student must be REJECTED from attendance recording
+        fake_id = "99999999"
+        marked, _, _ = mark_attendance_record(fake_id, "R_FAKE", "Fake Student")
+        assert not marked, "Attendance was incorrectly marked for non-enrolled student in app.py!"
+
+        # Check DB stdattendance
+        conn = db.get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM stdattendance WHERE std_id=%s", (fake_id,))
+        assert cur.fetchone() is None, "Non-enrolled student found in stdattendance table!"
+        conn.close()
+        print("  [PASS] Non-enrolled student attendance correctly rejected.")
+
+        # 6b. Enrolled student must SUCCEED
+        test_std_id = "9988"
+        conn = db.get_connection()
+        cur = conn.cursor()
+        cur.execute("DELETE FROM student WHERE Student_ID=%s", (test_std_id,))
+        cur.execute("DELETE FROM stdattendance WHERE std_id=%s", (test_std_id,))
+        cur.execute(
+            "INSERT INTO student (Student_ID, Name, Department, Course, Year, Semester, Division, Gender, DOB, Mobile_No, Address, Roll_No, Email, Teacher_Name, PhotoSample) "
+            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+            (test_std_id, "Test Enrolled Student", "SCSE", "Btech", "2021-25", "Semester-1", "Morning", "Female", "", "1234567890", "", "R9988", "test@test.com", "", "No")
+        )
+        conn.commit()
+
+        marked_first, _, _ = mark_attendance_record(test_std_id, "R9988", "Test Enrolled Student")
+        assert marked_first, "Enrolled student attendance was not recorded!"
+
+        cur.execute("SELECT std_id, std_name, std_attendance FROM stdattendance WHERE std_id=%s", (test_std_id,))
+        att_row = cur.fetchone()
+        assert att_row is not None and att_row[0] == test_std_id, "Enrolled student record missing from stdattendance!"
+        print("  [PASS] Enrolled student attendance successfully recorded.")
+
+        # 6c. Duplicate attendance on the same day must be prevented
+        marked_dup, _, _ = mark_attendance_record(test_std_id, "R9988", "Test Enrolled Student")
+        assert not marked_dup, "Duplicate attendance on same date was incorrectly recorded!"
+        print("  [PASS] Duplicate attendance prevention verified.")
+
+        # Clean up
+        cur.execute("DELETE FROM student WHERE Student_ID=%s", (test_std_id,))
+        cur.execute("DELETE FROM stdattendance WHERE std_id=%s", (test_std_id,))
+        conn.commit()
+        conn.close()
+
+        # Clean CSV file of test record
+        if os.path.exists("attendance.csv"):
+            with open("attendance.csv", "r", newline="\n") as f:
+                lines = f.readlines()
+            with open("attendance.csv", "w", newline="\n") as f:
+                for line in lines:
+                    if not line.startswith(f"{test_std_id},"):
+                        f.write(line)
+
+        print("  [PASS] Test student data cleaned up successfully.")
+    except Exception as e:
+        errors.append(f"Enrolled student attendance test failed: {e}")
+        print(f"  [FAIL] Enrolled student attendance: {e}")
+
     print("\n" + "=" * 70)
     if not errors:
         print("  ALL TESTS PASSED PERFECTLY! (0 ERRORS)")

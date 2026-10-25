@@ -41,23 +41,41 @@ def train_model_internal():
     if not image_paths:
         return False, "No face samples found."
 
+    # Retrieve currently enrolled students to strictly filter training data
+    enrolled_ids = set()
+    try:
+        conn = db.get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT Student_ID FROM student")
+        for row in cur.fetchall():
+            sid_str = str(row[0]).strip()
+            if sid_str.isdigit():
+                enrolled_ids.add(int(sid_str))
+        conn.close()
+    except Exception as e:
+        print("[WARN] Could not load enrolled students for training filter:", e)
+
     faces = []
     ids = []
     for p in image_paths:
         parts = os.path.basename(p).split(".")
         if len(parts) >= 3 and parts[1].isdigit():
             sid = int(parts[1])
+            # Only train on samples of enrolled students
+            if enrolled_ids and sid not in enrolled_ids:
+                continue
             try:
                 pil_img = Image.open(p).convert("L")
                 img_np = np.array(pil_img, "uint8")
                 img_np = cv2.resize(img_np, (200, 200))
+                img_np = cv2.equalizeHist(img_np)
                 faces.append(img_np)
                 ids.append(sid)
             except Exception:
                 continue
 
     if not faces:
-        return False, "No valid face samples with numeric IDs could be loaded."
+        return False, "No valid face samples for enrolled students found to train."
 
     try:
         clf = cv2.face.LBPHFaceRecognizer_create()
@@ -65,8 +83,8 @@ def train_model_internal():
         clf_file = os.path.join(BASE_DIR, "clf.xml")
         clf.write(clf_file)
         clf_model = clf
-        print(f"[INFO] LBPH model successfully trained on {len(faces)} images across {len(set(ids))} student(s).")
-        return True, f"Trained on {len(faces)} images across {len(set(ids))} student(s)."
+        print(f"[INFO] LBPH model successfully trained on {len(faces)} images across {len(set(ids))} enrolled student(s).")
+        return True, f"Trained on {len(faces)} images across {len(set(ids))} enrolled student(s)."
     except Exception as e:
         print("[WARN] Model training failed:", e)
         return False, str(e)
@@ -90,11 +108,30 @@ def load_model():
 load_model()
 
 def mark_attendance_record(std_id, roll_no, name):
+    # Verify student is actually enrolled in student table
+    enrolled = False
+    try:
+        conn = db.get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT Student_ID, Roll_No, Name FROM student WHERE Student_ID=%s", (str(std_id),))
+        row = cur.fetchone()
+        if row:
+            enrolled = True
+            roll_no = str(row[1]).strip() if row[1] else roll_no
+            name = str(row[2]).strip() if row[2] else name
+        conn.close()
+    except Exception as e:
+        print("[WARN] Error checking student enrollment for attendance:", e)
+
+    if not enrolled:
+        print(f"[REJECT] Attendance rejected: Student ID '{std_id}' is not enrolled in database.")
+        return False, "", ""
+
     now = datetime.now()
     date_str = now.strftime("%d/%m/%Y")
     time_str = now.strftime("%H:%M:%S")
 
-    # Read existing entries to prevent duplicate logs on the same day
+    # Read existing entries to prevent duplicate logs on the same day in CSV
     existing_keys = set()
     if os.path.exists(CSV_FILE):
         with open(CSV_FILE, "r", newline="\n") as f:
@@ -103,11 +140,25 @@ def mark_attendance_record(std_id, roll_no, name):
                 if len(parts) >= 5:
                     existing_keys.add((parts[0], parts[4]))
 
+    # Also check existing records in database stdattendance table
+    db_has_record = False
+    try:
+        conn = db.get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT std_id FROM stdattendance WHERE std_id=%s AND std_date=%s", (str(std_id), date_str))
+        if cur.fetchone():
+            db_has_record = True
+        conn.close()
+    except Exception:
+        pass
+
+    marked_new = False
     if (str(std_id), date_str) not in existing_keys:
         with open(CSV_FILE, "a", newline="\n") as f:
             f.write(f"{std_id},{roll_no},{name},{time_str},{date_str},Present\n")
+        marked_new = True
 
-        # Also insert into database
+    if not db_has_record:
         try:
             conn = db.get_connection()
             cur = conn.cursor()
@@ -118,10 +169,11 @@ def mark_attendance_record(std_id, roll_no, name):
             )
             conn.commit()
             conn.close()
+            marked_new = True
         except Exception as e:
             print("[WARN] Could not save to stdattendance table:", e)
-        return True, time_str, date_str
-    return False, time_str, date_str
+
+    return marked_new, time_str, date_str
 
 # ----------------- Routes -----------------
 
@@ -270,25 +322,22 @@ def recognize():
                 std_id_str = str(pred_id)
                 student = student_cache.get(std_id_str) or student_cache.get(str(int(pred_id)) if std_id_str.isdigit() else std_id_str)
 
-                # Robust threshold: confidence >= 65% indicates a verified facial match
-                if confidence >= 65:
+                # Strict requirement: confidence >= 65% AND must be a verified enrolled student in database
+                if confidence >= 65 and student is not None:
                     face_res["recognized"] = True
                     face_res["student_id"] = std_id_str
-
-                    if student is not None:
-                        face_res["name"] = student["name"]
-                        face_res["roll_no"] = student["roll_no"]
-                        face_res["department"] = student["department"]
-                    else:
-                        face_res["name"] = f"Student #{std_id_str}"
-                        face_res["roll_no"] = f"ID-{std_id_str}"
-                        face_res["department"] = "General"
+                    face_res["name"] = student["name"]
+                    face_res["roll_no"] = student["roll_no"]
+                    face_res["department"] = student["department"]
 
                     # Mark attendance
                     is_new, t_str, d_str = mark_attendance_record(std_id_str, face_res["roll_no"], face_res["name"])
                     face_res["new_attendance_marked"] = is_new
                     face_res["time"] = t_str
                     face_res["date"] = d_str
+                else:
+                    face_res["recognized"] = False
+                    face_res["name"] = "Unknown Face"
             except Exception as e:
                 print("[WARN] Prediction error:", e)
 
@@ -333,6 +382,9 @@ def handle_students():
         if not std_id or not name or not roll_no:
             return jsonify({"error": "Student ID, Name, and Roll Number are required"}), 400
 
+        if not std_id.isdigit():
+            return jsonify({"error": "Student ID must be a numeric integer (e.g. 101) for facial recognition compatibility"}), 400
+
         try:
             conn = db.get_connection()
             cur = conn.cursor()
@@ -369,9 +421,22 @@ def capture_sample():
     data = request.get_json(force=True)
     std_id = data.get("id", "").strip()
     image_b64 = data.get("image", "")
+    auto_train = data.get("auto_train", True)
 
     if not std_id or not image_b64:
         return jsonify({"error": "Student ID and image are required"}), 400
+
+    # Ensure student is enrolled in database before capturing samples
+    try:
+        conn = db.get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT Student_ID FROM student WHERE Student_ID=%s", (std_id,))
+        exists = cur.fetchone()
+        conn.close()
+        if not exists:
+            return jsonify({"error": f"Student ID '{std_id}' is not enrolled in the database. Please save the student profile first before capturing samples."}), 400
+    except Exception as e:
+        return jsonify({"error": f"Database verification error: {str(e)}"}), 500
 
     try:
         if "," in image_b64:
@@ -389,6 +454,7 @@ def capture_sample():
         faces = sorted(faces, key=lambda f: f[2] * f[3], reverse=True)
         (x, y, w, h) = faces[0]
         face_crop = cv2.resize(gray[y:y+h, x:x+w], (200, 200))
+        face_crop = cv2.equalizeHist(face_crop)
 
         # Count existing samples for this student
         existing = [f for f in os.listdir(DATA_IMG_DIR) if f.startswith(f"student.{std_id}.") or f.startswith(f"stdudent.{std_id}.")]
@@ -407,13 +473,14 @@ def capture_sample():
         except Exception:
             pass
 
-        # Auto-retrain model in real-time so scanner immediately recognizes new faces
-        train_model_internal()
+        # Auto-retrain model in real-time unless part of burst sequence
+        if auto_train:
+            train_model_internal()
 
         return jsonify({
             "success": True,
             "sample_num": sample_num,
-            "message": f"Sample {sample_num} saved for Student ID {std_id}! Model automatically updated."
+            "message": f"Sample {sample_num} saved for Student ID {std_id}!"
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -491,6 +558,21 @@ def mark_manual_attendance():
     name = data.get("name", "").strip()
     if not std_id or not name:
         return jsonify({"error": "Student ID and Name are required"}), 400
+
+    # Verify student is in enrolled students database
+    try:
+        conn = db.get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT Student_ID, Roll_No, Name FROM student WHERE Student_ID=%s", (std_id,))
+        row = cur.fetchone()
+        conn.close()
+        if not row:
+            return jsonify({"error": f"Cannot mark attendance: Student ID '{std_id}' is not enrolled in the student database."}), 400
+        roll_no = str(row[1]).strip() if row[1] else roll_no
+        name = str(row[2]).strip() if row[2] else name
+    except Exception as e:
+        return jsonify({"error": f"Database verification error: {str(e)}"}), 500
+
     is_new, time_str, date_str = mark_attendance_record(std_id, roll_no, name)
     if is_new:
         return jsonify({"success": True, "message": f"Attendance successfully marked for {name} ({time_str})"})

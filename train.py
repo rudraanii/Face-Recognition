@@ -66,6 +66,21 @@ class Train:
             )
             return
 
+        # Get currently enrolled students from database
+        enrolled_ids = set()
+        try:
+            import db
+            conn = db.get_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT Student_ID FROM student")
+            for row in cur.fetchall():
+                sid_str = str(row[0]).strip()
+                if sid_str.isdigit():
+                    enrolled_ids.add(int(sid_str))
+            conn.close()
+        except Exception as e:
+            print("[WARN] Could not retrieve enrolled student list:", e)
+
         faces = []
         ids = []
 
@@ -77,18 +92,24 @@ class Train:
                 # Check for format: student.<id>.<sample>.ext or stdudent.<id>.<sample>.ext
                 if len(parts) >= 3 and parts[1].isdigit():
                     student_id = int(parts[1])
+                    # Only train on samples of students currently enrolled in the database
+                    if enrolled_ids and student_id not in enrolled_ids:
+                        continue
                 else:
                     continue
 
                 pil_img = Image.open(image_path).convert("L")  # Convert to grayscale
                 image_np = np.array(pil_img, "uint8")
+                image_np = cv2.resize(image_np, (200, 200))
+                image_np = cv2.equalizeHist(image_np)
 
                 faces.append(image_np)
                 ids.append(student_id)
 
-                cv2.imshow("Training Dataset in Progress... (Press ESC to skip)", image_np)
-                if cv2.waitKey(1) == 27:
-                    break
+                if self.root:
+                    cv2.imshow("Training Dataset in Progress... (Press ESC to skip)", image_np)
+                    if cv2.waitKey(1) == 27:
+                        break
             except Exception as e:
                 print(f"[WARN] Skipping corrupted image file {image_path}: {e}")
                 continue
@@ -96,11 +117,11 @@ class Train:
         cv2.destroyAllWindows()
 
         if not faces:
-            messagebox.showerror(
-                "Training Error",
-                "No valid sample images with numeric IDs found in 'data_img'!\nSample filenames must follow format: student.<id>.<num>.jpg",
-                parent=self.root
-            )
+            msg = "No valid sample images found for enrolled students in 'data_img'!\nPlease enroll students and capture sample photos first."
+            if self.root:
+                messagebox.showerror("Training Error", msg, parent=self.root)
+            else:
+                print("[ERROR]", msg)
             return
 
         try:
@@ -109,13 +130,16 @@ class Train:
             clf.train(faces, ids_np)
             clf.write("clf.xml")
 
-            messagebox.showinfo(
-                "Training Completed",
-                f"LBPH Classifier trained successfully on {len(faces)} images across {len(set(ids))} student(s)!\nModel saved to clf.xml.",
-                parent=self.root
-            )
+            msg = f"LBPH Classifier trained successfully on {len(faces)} images across {len(set(ids))} enrolled student(s)!\nModel saved to clf.xml."
+            if self.root:
+                messagebox.showinfo("Training Completed", msg, parent=self.root)
+            else:
+                print("[SUCCESS]", msg)
         except Exception as es:
-            messagebox.showerror("Training Failed", f"Could not train classifier model:\n{str(es)}", parent=self.root)
+            if self.root:
+                messagebox.showerror("Training Failed", f"Could not train classifier model:\n{str(es)}", parent=self.root)
+            else:
+                print("[ERROR] Training failed:", es)
 
 if __name__ == "__main__":
     root = Tk()

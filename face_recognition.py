@@ -50,6 +50,25 @@ class Face_Recognition:
 
     # ===================== Attendance Logging ===================
     def mark_attendance(self, i, r, n):
+        # Strictly verify student exists in the enrolled student database
+        enrolled = False
+        try:
+            conn = db.get_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT Student_ID, Roll_No, Name FROM student WHERE Student_ID=%s", (str(i),))
+            row = cur.fetchone()
+            if row:
+                enrolled = True
+                r = str(row[1]) if row[1] else r
+                n = str(row[2]) if row[2] else n
+            conn.close()
+        except Exception as e:
+            print("[WARN] Error checking student enrollment for attendance:", e)
+
+        if not enrolled:
+            print(f"[REJECT] Attendance not marked: Student ID {i} is not enrolled in database.")
+            return
+
         csv_file = "attendance.csv"
         now = datetime.now()
         date_str = now.strftime("%d/%m/%Y")
@@ -60,7 +79,7 @@ class Face_Recognition:
             with open(csv_file, "w", newline="\n") as f:
                 f.write("Std_ID,Roll_No,Name,Time,Date,Attendance\n")
 
-        # Read existing attendance records to prevent duplicates on the same date
+        # Read existing attendance records from CSV to prevent duplicates on same date
         existing_keys = set()
         with open(csv_file, "r", newline="\n") as f:
             for line in f.readlines()[1:]:
@@ -68,11 +87,23 @@ class Face_Recognition:
                 if len(parts) >= 5:
                     existing_keys.add((parts[0], parts[4]))  # (ID, Date)
 
+        # Check existing attendance in database table stdattendance
+        db_has_record = False
+        try:
+            conn = db.get_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT std_id FROM stdattendance WHERE std_id=%s AND std_date=%s", (str(i), date_str))
+            if cur.fetchone():
+                db_has_record = True
+            conn.close()
+        except Exception:
+            pass
+
         if (str(i), date_str) not in existing_keys:
             with open(csv_file, "a", newline="\n") as f:
                 f.write(f"{i},{r},{n},{time_str},{date_str},Present\n")
-            
-            # Also record in database if stdattendance table exists
+
+        if not db_has_record:
             try:
                 conn = db.get_connection()
                 cur = conn.cursor()
@@ -80,8 +111,8 @@ class Face_Recognition:
                             (str(i), str(r), str(n), time_str, date_str, "Present"))
                 conn.commit()
                 conn.close()
-            except Exception:
-                pass
+            except Exception as e:
+                print("[WARN] Could not save to stdattendance:", e)
 
     # ==================== Face Recognition Execution ==================
     def face_recog(self):
@@ -98,14 +129,18 @@ class Face_Recognition:
             messagebox.showerror("Error", "Trained Classifier model (clf.xml) not found!\nPlease train the dataset first in the 'Data Train' panel.", parent=self.root)
             return
 
-        # Pre-cache student records from database into memory to avoid per-frame DB hits
+        # Pre-cache enrolled student records from database
         student_cache = {}
         try:
             conn = db.get_connection()
             cur = conn.cursor()
             cur.execute("SELECT Student_ID, Roll_No, Name FROM student")
             for row in cur.fetchall():
-                student_cache[str(row[0])] = (str(row[1]), str(row[2]))
+                sid_str = str(row[0]).strip()
+                s_info = (str(row[1]).strip() if row[1] else "", str(row[2]).strip() if row[2] else "")
+                student_cache[sid_str] = s_info
+                if sid_str.isdigit():
+                    student_cache[str(int(sid_str))] = s_info
             conn.close()
         except Exception as es:
             print("[WARN] Could not preload student database cache:", es)
@@ -119,6 +154,8 @@ class Face_Recognition:
             return
 
         videoCap = cv2.VideoCapture(0)
+        if not videoCap.isOpened():
+            videoCap = cv2.VideoCapture(0, cv2.CAP_AVFOUNDATION)
         if not videoCap.isOpened():
             messagebox.showerror("Camera Error", "Could not open webcam. Please check your camera permissions and device connection.")
             return
@@ -141,12 +178,9 @@ class Face_Recognition:
                 std_id_str = str(predicted_id)
                 student_info = student_cache.get(std_id_str) or student_cache.get(str(int(predicted_id)) if std_id_str.isdigit() else std_id_str)
 
-                if confidence >= 65:
-                    if student_info is not None:
-                        roll_no, name = student_info
-                    else:
-                        roll_no = f"ID: {std_id_str}"
-                        name = f"Student #{std_id_str}"
+                # Strict requirement: confidence >= 65% AND must be a verified enrolled student in database
+                if confidence >= 65 and student_info is not None:
+                    roll_no, name = student_info
                     cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
                     cv2.putText(img, f"ID: {std_id_str}", (x, y-55), cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
                     cv2.putText(img, f"Name: {name}", (x, y-30), cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)

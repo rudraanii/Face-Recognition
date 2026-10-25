@@ -213,25 +213,40 @@ class Attendance:
             messagebox.showerror("Error", f"Due to: {str(es)}", parent=self.root)
 
     def save_to_db(self):
-        if (self.var_id.get().strip() == "" or self.var_roll.get().strip() == "" or
-            self.var_name.get().strip() == "" or self.var_attend.get() == "Status"):
+        std_id = self.var_id.get().strip()
+        roll_no = self.var_roll.get().strip()
+        name = self.var_name.get().strip()
+        t_str = self.var_time.get().strip()
+        d_str = self.var_date.get().strip()
+        status = self.var_attend.get()
+
+        if std_id == "" or roll_no == "" or name == "" or status == "Status":
             messagebox.showerror("Error", "Please select or enter an attendance row first!", parent=self.root)
             return
 
         try:
             conn = db.get_connection()
             mycursor = conn.cursor()
+
+            # Verify student is enrolled in database
+            mycursor.execute("SELECT Student_ID, Roll_No, Name FROM student WHERE Student_ID=%s", (std_id,))
+            student_row = mycursor.fetchone()
+            if not student_row:
+                conn.close()
+                messagebox.showerror("Error", f"Cannot record attendance: Student ID '{std_id}' is not enrolled in the student database!", parent=self.root)
+                return
+
+            # Check for duplicate attendance on the same date
+            mycursor.execute("SELECT std_id FROM stdattendance WHERE std_id=%s AND std_date=%s", (std_id, d_str))
+            if mycursor.fetchone():
+                conn.close()
+                messagebox.showwarning("Duplicate Record", f"Attendance for Student ID '{std_id}' on {d_str} is already recorded in the database!", parent=self.root)
+                return
+
             mycursor.execute(
                 "INSERT INTO stdattendance (std_id, std_roll_no, std_name, std_time, std_date, std_attendance) "
                 "VALUES (%s,%s,%s,%s,%s,%s)",
-                (
-                    self.var_id.get().strip(),
-                    self.var_roll.get().strip(),
-                    self.var_name.get().strip(),
-                    self.var_time.get().strip(),
-                    self.var_date.get().strip(),
-                    self.var_attend.get()
-                )
+                (std_id, roll_no, name, t_str, d_str, status)
             )
             conn.commit()
             conn.close()

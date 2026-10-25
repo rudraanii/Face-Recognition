@@ -239,6 +239,10 @@ class Student:
             self.var_roll.get().strip() == ""):
             messagebox.showerror("Validation Error", "Department, Course, Year, Semester, Student ID, Name, and Roll No are required!", parent=self.root)
             return False
+
+        if not self.var_std_id.get().strip().isdigit():
+            messagebox.showerror("Validation Error", "Student ID must be a numeric integer (e.g., 1, 2, 101) for facial recognition model training!", parent=self.root)
+            return False
         return True
 
     def add_data(self):
@@ -272,6 +276,15 @@ class Student:
             conn.close()
             self.fetch_data()
             messagebox.showinfo("Success", "Student record successfully saved!", parent=self.root)
+
+            if self.var_radio1.get() == "Yes":
+                ask_take = messagebox.askyesno(
+                    "Capture Face Samples",
+                    "Student record saved!\nWould you like to capture face photo samples now?",
+                    parent=self.root
+                )
+                if ask_take:
+                    self.generate_dataset()
         except Exception as es:
             messagebox.showerror("Error", f"Could not save student:\n{str(es)}", parent=self.root)
 
@@ -416,6 +429,36 @@ class Student:
             return
 
         std_id_val = self.var_std_id.get().strip()
+
+        # Ensure student is enrolled in database first
+        try:
+            conn = db.get_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT Student_ID FROM student WHERE Student_ID=%s", (std_id_val,))
+            saved = cur.fetchone()
+            conn.close()
+            if not saved:
+                ask_save = messagebox.askyesno(
+                    "Student Not Saved",
+                    f"Student ID {std_id_val} must be saved in the enrolled student database before capturing face samples.\nWould you like to save this student record now?",
+                    parent=self.root
+                )
+                if ask_save:
+                    self.add_data()
+                    # Re-verify
+                    conn = db.get_connection()
+                    cur = conn.cursor()
+                    cur.execute("SELECT Student_ID FROM student WHERE Student_ID=%s", (std_id_val,))
+                    saved = cur.fetchone()
+                    conn.close()
+                    if not saved:
+                        return
+                else:
+                    return
+        except Exception as e:
+            messagebox.showerror("Database Error", f"Could not verify student record: {e}", parent=self.root)
+            return
+
         cascade_file = get_asset_path("haarcascade_frontalface_default.xml")
         if not os.path.exists(cascade_file):
             cascade_file = "haarcascade_frontalface_default.xml"
@@ -429,30 +472,43 @@ class Student:
 
         cap = cv2.VideoCapture(0)
         if not cap.isOpened():
+            cap = cv2.VideoCapture(0, cv2.CAP_AVFOUNDATION)
+        if not cap.isOpened():
             messagebox.showerror("Camera Error", "Could not access the webcam.\nPlease ensure your camera is connected and application has camera permissions.", parent=self.root)
             return
 
         img_id = 0
-        messagebox.showinfo("Camera Starting", "Position yourself in front of the camera.\nTaking 100 sample images.\nPress ENTER to stop early.", parent=self.root)
+        messagebox.showinfo("Camera Starting", "Position yourself in front of the camera.\nTaking 100 sample images.\nPress ENTER or Q to stop early.", parent=self.root)
 
         while True:
             ret, my_frame = cap.read()
             if not ret or my_frame is None:
                 break
 
+            display_frame = my_frame.copy()
             gray = cv2.cvtColor(my_frame, cv2.COLOR_BGR2GRAY)
-            faces = face_classifier.detectMultiScale(gray, 1.3, 5)
+            faces = face_classifier.detectMultiScale(gray, 1.2, 5, minSize=(60, 60))
 
+            face_detected = False
             for (x, y, w, h) in faces:
                 img_id += 1
                 face_crop = gray[y:y+h, x:x+w]
                 face_resized = cv2.resize(face_crop, (200, 200))
                 file_path = f"data_img/student.{std_id_val}.{img_id}.jpg"
                 cv2.imwrite(file_path, face_resized)
-                
-                cv2.putText(face_resized, f"Sample: {img_id}/100", (10, 30), cv2.FONT_HERSHEY_COMPLEX, 0.6, (0, 255, 0), 2)
-                cv2.imshow("Capturing Face Samples (Press ENTER or Q to cancel)", face_resized)
-                break  # capture primary face
+
+                # Draw bounding box and indicator on live camera frame
+                cv2.rectangle(display_frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                cv2.putText(display_frame, f"Sample: {img_id}/100", (x, y-10), cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
+                face_detected = True
+                break  # capture primary face per frame
+
+            if not face_detected:
+                cv2.putText(display_frame, "No face detected - look at camera", (20, 40), cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 0, 255), 2)
+            else:
+                cv2.putText(display_frame, f"Capturing Samples: {img_id}/100", (20, 40), cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
+
+            cv2.imshow("Capturing Face Samples (Press ENTER or Q to exit)", display_frame)
 
             key = cv2.waitKey(1) & 0xFF
             if key in (13, ord('q'), ord('Q'), 27) or img_id >= 100:
@@ -461,18 +517,32 @@ class Student:
         cap.release()
         cv2.destroyAllWindows()
 
-        # Update PhotoSample flag in database
-        try:
-            conn = db.get_connection()
-            cur = conn.cursor()
-            cur.execute("UPDATE student SET PhotoSample='Yes' WHERE Student_ID=%s", (std_id_val,))
-            conn.commit()
-            conn.close()
-            self.fetch_data()
-        except Exception:
-            pass
+        if img_id > 0:
+            # Update PhotoSample flag in database
+            try:
+                conn = db.get_connection()
+                cur = conn.cursor()
+                cur.execute("UPDATE student SET PhotoSample='Yes' WHERE Student_ID=%s", (std_id_val,))
+                conn.commit()
+                conn.close()
+                self.fetch_data()
+            except Exception:
+                pass
 
-        messagebox.showinfo("Completed", f"Face dataset generated successfully!\nCaptured {img_id} samples for Student ID: {std_id_val}", parent=self.root)
+            ask_train = messagebox.askyesno(
+                "Training Recommended",
+                f"Face dataset generated successfully!\nCaptured {img_id} samples for Student ID: {std_id_val}.\n\nWould you like to train the face model now so this student can be recognized immediately?",
+                parent=self.root
+            )
+            if ask_train:
+                try:
+                    from train import Train
+                    trainer = Train(None)
+                    trainer.train_classifier()
+                except Exception as te:
+                    print("[WARN] Auto-train prompt failed:", te)
+        else:
+            messagebox.showwarning("No Samples", "No face samples were captured. Please check lighting and camera position.", parent=self.root)
 
 if __name__ == "__main__":
     root = Tk()

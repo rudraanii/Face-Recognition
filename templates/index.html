@@ -2278,13 +2278,20 @@
         // ================= SAMPLE CAPTURE STUDIO =================
         async function initSampleCamera() {
             const vid = document.getElementById("sample-video");
-            if (videoStream && !vid.srcObject) {
-                vid.srcObject = videoStream;
-            } else if (!vid.srcObject) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                    vid.srcObject = stream;
-                } catch(e) {}
+            try {
+                if (videoStream && videoStream.active) {
+                    vid.srcObject = videoStream;
+                    await vid.play().catch(() => {});
+                } else {
+                    videoStream = await navigator.mediaDevices.getUserMedia({
+                        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" }
+                    });
+                    vid.srcObject = videoStream;
+                    await vid.play().catch(() => {});
+                }
+            } catch (e) {
+                console.warn("[Camera] initSampleCamera error:", e);
+                showToast("Camera access needed for face capture. Please allow camera permissions.", "warning");
             }
         }
 
@@ -2319,17 +2326,28 @@
             } catch(e) {}
         }
 
-        async function captureSamplePhoto() {
+        async function captureSamplePhoto(autoTrain = true) {
             const stdId = document.getElementById("reg-id").value.trim();
             if (!stdId) {
-                showToast("Please enter a Student ID in the form first!", "warning");
-                return;
+                showToast("Please enter a numeric Student ID in the form first!", "warning");
+                return false;
             }
 
             const video = document.getElementById("sample-video");
+            // If camera stream is not active or video is not rendering, attempt re-initialization
+            if (!video.srcObject || video.videoWidth === 0 || video.readyState < 2) {
+                await initSampleCamera();
+                await new Promise(r => setTimeout(r, 350));
+            }
+
+            if (!video.videoWidth || video.videoHeight === 0) {
+                showToast("Camera feed is not ready yet. Please ensure camera permissions are granted and device is connected.", "danger");
+                return false;
+            }
+
             const canvas = document.createElement("canvas");
-            canvas.width = video.videoWidth || 640;
-            canvas.height = video.videoHeight || 480;
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
             const ctx = canvas.getContext("2d");
             ctx.drawImage(video, 0, 0);
 
@@ -2339,42 +2357,52 @@
                 const res = await fetch("/api/capture_sample", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id: stdId, image: b64 })
+                    body: JSON.stringify({ id: stdId, image: b64, auto_train: autoTrain })
                 });
                 const data = await res.json();
                 if (data.success) {
-                    showToast(data.message, "success");
+                    if (autoTrain) showToast(data.message, "success");
                     loadStudentSampleCount(stdId);
                     updateSystemStats();
+                    return true;
                 } else {
                     showToast(data.error, "danger");
+                    return false;
                 }
             } catch (err) {
                 showToast("Sample capture failed: " + err.message, "danger");
+                return false;
             }
         }
 
         async function startBurstCapture() {
             const stdId = document.getElementById("reg-id").value.trim();
             if (!stdId) {
-                showToast("Please enter a Student ID in the form first!", "warning");
+                showToast("Please enter a numeric Student ID in the form first!", "warning");
                 return;
             }
             const btn = document.getElementById("btn-burst");
             btn.disabled = true;
             showToast("Burst capture started (10 face crops)...", "warning");
 
+            let captured = 0;
             for (let i = 0; i < 10; i++) {
-                await captureSamplePhoto();
+                const ok = await captureSamplePhoto(false);
+                if (ok) captured++;
                 await new Promise(r => setTimeout(r, 260));
             }
             btn.disabled = false;
-            // Force re-compile LBPH model
-            try {
-                await fetch("/api/train", { method: "POST" });
-            } catch(e) {}
-            updateSystemStats();
-            showToast("Burst capture sequence complete! Face model updated and ready for scanner.", "success");
+
+            if (captured > 0) {
+                // Recompile LBPH model once after burst sequence
+                try {
+                    await fetch("/api/train", { method: "POST" });
+                } catch(e) {}
+                updateSystemStats();
+                showToast(`Burst capture sequence complete! Captured ${captured} samples and updated face recognition model.`, "success");
+            } else {
+                showToast("No face crops could be captured during burst mode. Ensure camera is working and face is clearly visible.", "danger");
+            }
         }
 
         async function handleStudentEnroll(e) {
