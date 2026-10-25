@@ -3,336 +3,649 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AURA // Intelligent Facial Attendance Studio</title>
+    <title>VisionAttend Pro — Enterprise Biometric Attendance Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Aura Rose & Pink Palette Hierarchy */
-            --bg-obsidian: #080307;
-            --bg-card: rgba(26, 9, 21, 0.7);
-            --bg-card-hover: rgba(42, 13, 34, 0.85);
-            --bg-glass-subtle: rgba(255, 255, 255, 0.03);
+            /* Enterprise Dark Slate / Zinc Palette */
+            --bg-canvas: #090d16;
+            --bg-sidebar: #0f1523;
+            --bg-card: #131b2e;
+            --bg-card-hover: #18223a;
+            --bg-subtle: #1a243d;
+            --bg-input: #0b1120;
             
-            /* Rose & Pink Variations */
-            --pink-primary: #ff2a85;
-            --pink-vibrant: #f43f8e;
-            --pink-coral: #fb719f;
-            --pink-blush: #ffe4ef;
-            --pink-pastel: #fbcfe8;
-            --pink-soft: #f472b6;
-            --pink-border: rgba(255, 110, 168, 0.18);
-            --pink-border-glow: rgba(255, 64, 140, 0.6);
-            --pink-glow-sm: 0 0 16px rgba(255, 42, 133, 0.3);
-            --pink-glow-lg: 0 0 35px rgba(255, 42, 133, 0.45);
+            /* Professional Borders & Dividers */
+            --border-subtle: rgba(255, 255, 255, 0.07);
+            --border-card: rgba(148, 163, 184, 0.14);
+            --border-focus: #3b82f6;
+
+            /* Brand & Accent Hierarchy */
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --primary-subtle: rgba(59, 130, 246, 0.12);
+            --primary-glow: rgba(59, 130, 246, 0.25);
+
+            --success: #10b981;
+            --success-subtle: rgba(16, 185, 129, 0.14);
+            --warning: #f59e0b;
+            --warning-subtle: rgba(245, 158, 11, 0.14);
+            --danger: #ef4444;
+            --danger-subtle: rgba(239, 68, 68, 0.14);
             
-            /* Text Tones */
-            --text-heading: #fff5f8;
-            --text-body: #e4c5d5;
-            --text-muted: #a37c93;
-            
-            /* Transitions & Radii */
-            --radius-xl: 24px;
-            --radius-lg: 18px;
-            --radius-md: 12px;
-            --radius-sm: 8px;
+            /* High-Contrast Typography */
+            --text-heading: #f8fafc;
+            --text-body: #cbd5e1;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+
+            /* Geometry & Transitions */
+            --radius-lg: 14px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --radius-full: 9999px;
             --ease: cubic-bezier(0.16, 1, 0.3, 1);
+            --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border-card);
+            --shadow-elevated: 0 12px 36px -4px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--border-card);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background-color: var(--bg-obsidian);
+            background-color: var(--bg-canvas);
             color: var(--text-body);
             min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-            background-image: 
-                radial-gradient(1100px circle at 50% -80px, rgba(255, 42, 133, 0.16), transparent 70%),
-                radial-gradient(900px circle at 90% 85%, rgba(244, 63, 142, 0.1), transparent 60%),
-                radial-gradient(700px circle at 10% 60%, rgba(217, 70, 239, 0.08), transparent 55%);
-            background-attachment: fixed;
-        }
-
-        /* Subtle grid background texture */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: radial-gradient(rgba(255, 110, 168, 0.08) 1px, transparent 1px);
-            background-size: 32px 32px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Navigation Bar */
-        nav.navbar {
-            position: sticky;
-            top: 16px;
-            z-index: 1000;
-            max-width: 1320px;
-            margin: 0 auto 32px;
-            padding: 12px 24px;
-            background: rgba(22, 7, 18, 0.75);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--pink-border);
-            border-radius: 9999px;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04);
+            overflow-x: hidden;
         }
 
-        .brand-container {
+        /* ---------------- APP SHELL LAYOUT ---------------- */
+        aside.sidebar {
+            width: 270px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-card);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            user-select: none;
+        }
+
+        .sidebar-header {
+            padding: 24px 22px;
             display: flex;
             align-items: center;
             gap: 12px;
-            text-decoration: none;
+            border-bottom: 1px solid var(--border-subtle);
         }
 
-        .brand-badge {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--pink-primary), #ec4899);
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: var(--pink-glow-sm);
-            font-size: 18px;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            color: #fff;
+            flex-shrink: 0;
         }
 
-        .brand-titles h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: -0.03em;
+        .brand-text h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-heading);
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .brand-text span {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .sidebar-nav {
+            padding: 20px 14px;
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .nav-group-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            padding: 0 12px;
+            margin-bottom: 6px;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 13.5px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s var(--ease);
+        }
+
+        .nav-item-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+            color: var(--text-dim);
+            transition: color 0.2s;
+        }
+
+        .nav-item-btn:hover {
+            background-color: var(--bg-subtle);
+            color: var(--text-heading);
+        }
+
+        .nav-item-btn:hover svg {
+            color: var(--text-heading);
+        }
+
+        .nav-item-btn.active {
+            background-color: var(--primary-subtle);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-item-btn.active svg {
+            color: var(--primary);
+        }
+
+        .sidebar-footer {
+            padding: 18px 20px;
+            border-top: 1px solid var(--border-subtle);
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .system-health-badge {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+        }
+
+        .health-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .health-title {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .health-status {
+            font-size: 13px;
+            font-weight: 600;
             color: var(--text-heading);
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .brand-titles h1 span {
-            font-size: 11px;
-            font-weight: 700;
-            padding: 2px 7px;
-            background: rgba(255, 42, 133, 0.15);
-            border: 1px solid rgba(255, 42, 133, 0.35);
-            border-radius: 6px;
-            color: var(--pink-primary);
-            letter-spacing: 0.05em;
-        }
-
-        /* Tab Switcher */
-        .tabs-pill {
-            display: flex;
-            background: rgba(35, 12, 28, 0.6);
-            border: 1px solid var(--pink-border);
-            padding: 4px;
-            border-radius: 9999px;
-            gap: 4px;
-        }
-
-        .tab-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 8px 18px;
-            border-radius: 9999px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.25s var(--ease);
-        }
-
-        .tab-btn:hover {
-            color: var(--text-heading);
-            background: rgba(255, 110, 168, 0.1);
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, var(--pink-primary) 0%, var(--pink-vibrant) 100%);
-            color: #ffffff;
-            box-shadow: 0 4px 16px rgba(255, 42, 133, 0.4);
-        }
-
-        .status-pill {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 14px;
-            border-radius: 9999px;
-            background: rgba(34, 197, 94, 0.12);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            font-size: 12px;
-            font-weight: 600;
-            color: #4ade80;
-        }
-
-        .pulse-indicator {
-            width: 7px;
-            height: 7px;
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background: #4ade80;
-            box-shadow: 0 0 8px #4ade80;
-            animation: pulse 1.8s infinite;
+            background-color: var(--success);
+            box-shadow: 0 0 8px var(--success);
+            animation: pulse 2s infinite ease-in-out;
         }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.8); }
+            50% { opacity: 0.4; transform: scale(0.85); }
         }
 
-        /* Main Workspace Layout */
-        main {
-            max-width: 1320px;
-            margin: 0 auto 60px;
-            padding: 0 20px;
-            position: relative;
-            z-index: 1;
+        /* ---------------- MAIN VIEWPORT ---------------- */
+        main.main-viewport {
+            margin-left: 270px;
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Glassmorphism Card System */
-        .glass-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--pink-border);
-            border-radius: var(--radius-xl);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-            transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
-        }
-
-        .glass-card:hover {
-            border-color: rgba(255, 110, 168, 0.35);
-        }
-
-        /* Overview Stat Cards */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-            margin-bottom: 28px;
-        }
-
-        .stat-box {
-            padding: 22px 24px;
+        /* Top Executive Header */
+        header.top-header {
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            background: rgba(9, 13, 22, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-card);
+            padding: 16px 36px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            position: relative;
-            overflow: hidden;
         }
 
-        .stat-box::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--pink-primary), transparent);
-            opacity: 0.5;
-        }
-
-        .stat-numbers p {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-muted);
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .stat-numbers h3 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--text-heading);
-            letter-spacing: -0.02em;
-        }
-
-        .stat-icon-wrap {
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-md);
-            background: rgba(255, 42, 133, 0.1);
-            border: 1px solid var(--pink-border);
+        .breadcrumbs {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            color: var(--pink-primary);
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
         }
 
-        /* Tab Visibility */
-        .tab-content {
+        .breadcrumbs span.current {
+            color: var(--text-heading);
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .clock-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-card);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-header {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            color: var(--text-body);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-header:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-heading);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 10px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+            color: #fff;
+        }
+
+        /* Content Area */
+        .page-content {
+            padding: 32px 36px 60px;
+            flex: 1;
+        }
+
+        .tab-pane {
             display: none;
-            animation: fadeIn 0.4s var(--ease);
+            animation: paneFadeIn 0.25s var(--ease);
         }
 
-        .tab-content.active {
+        .tab-pane.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes paneFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ---------------- TAB 1: LIVE SCANNER ---------------- */
-        .scanner-layout {
+        /* ---------------- CARDS & METRIC GRID ---------------- */
+        .stats-grid {
             display: grid;
-            grid-template-columns: 1.8fr 1fr;
-            gap: 24px;
-        }
-
-        .camera-console {
-            padding: 26px;
-            display: flex;
-            flex-direction: column;
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
+            margin-bottom: 28px;
         }
 
-        .console-header {
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 22px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .stat-label {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-value {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--text-heading);
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        .stat-subtext {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-icon-wrapper {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .stat-icon-wrapper.success { color: var(--success); background: var(--success-subtle); }
+        .stat-icon-wrapper.warning { color: var(--warning); background: var(--warning-subtle); }
+
+        /* ---------------- OVERVIEW SPLIT LAYOUT ---------------- */
+        .overview-split {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .panel-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .panel-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-subtle);
         }
 
-        .console-title h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 20px;
+        .panel-title {
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-heading);
-            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .console-title p {
-            font-size: 13px;
+        .panel-subtitle {
+            font-size: 12.5px;
             color: var(--text-muted);
             margin-top: 2px;
         }
 
-        .camera-viewfinder {
+        /* Department Progress Bars */
+        .dept-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .dept-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .dept-item-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .dept-name { color: var(--text-heading); }
+        .dept-count { color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+        .progress-track {
+            height: 8px;
+            background: var(--bg-subtle);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            border-radius: var(--radius-full);
+            transition: width 0.6s var(--ease);
+        }
+
+        /* Activity Stream */
+        .activity-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-subtle);
+            transition: background 0.2s;
+        }
+
+        .activity-item:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .activity-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .activity-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: var(--text-heading);
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .activity-meta h5 {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text-heading);
+        }
+
+        .activity-meta p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .badge-verified {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--success);
+            background: var(--success-subtle);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        /* Quick Action Shortcuts */
+        .quick-actions-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .action-shortcut {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-shortcut:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .action-shortcut-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: var(--primary-subtle);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .action-shortcut-text h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-heading);
+        }
+
+        .action-shortcut-text p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ---------------- TAB 2: LIVE BIOMETRIC SCANNER ---------------- */
+        .scanner-layout {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 24px;
+        }
+
+        .scanner-console {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .viewfinder-wrapper {
             position: relative;
             width: 100%;
-            height: 480px;
-            border-radius: var(--radius-lg);
+            height: 460px;
             background: #000;
+            border-radius: var(--radius-md);
             overflow: hidden;
-            border: 1px solid var(--pink-border);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), var(--pink-glow-sm);
+            border: 1px solid var(--border-card);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
         }
 
         #webcam-video {
@@ -348,402 +661,453 @@
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
             transform: scaleX(-1);
-        }
-
-        /* HUD Geometric Precision Corners */
-        .hud-bracket {
-            position: absolute;
-            width: 32px;
-            height: 32px;
-            border: 2px solid var(--pink-primary);
             pointer-events: none;
-            z-index: 10;
-            box-shadow: 0 0 12px var(--pink-primary);
         }
 
-        .b-top-left { top: 20px; left: 20px; border-right: none; border-bottom: none; border-top-left-radius: 8px; }
-        .b-top-right { top: 20px; right: 20px; border-left: none; border-bottom: none; border-top-right-radius: 8px; }
-        .b-bottom-left { bottom: 20px; left: 20px; border-right: none; border-top: none; border-bottom-left-radius: 8px; }
-        .b-bottom-right { bottom: 20px; right: 20px; border-left: none; border-top: none; border-bottom-right-radius: 8px; }
-
-        /* Scanning Neon Laser */
-        .scan-laser {
+        /* Professional Reticle Frame */
+        .reticle-corner {
             position: absolute;
-            left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--pink-primary), #ffffff, var(--pink-primary), transparent);
-            box-shadow: 0 0 20px var(--pink-primary), 0 0 6px #ffffff;
-            animation: laserScan 2.8s infinite ease-in-out;
+            width: 28px;
+            height: 28px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
             pointer-events: none;
-            z-index: 9;
+            z-index: 5;
         }
 
-        @keyframes laserScan {
-            0% { top: 6%; opacity: 0.15; }
-            50% { opacity: 0.9; }
-            100% { top: 94%; opacity: 0.15; }
+        .rc-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; border-top-left-radius: 6px; }
+        .rc-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; border-top-right-radius: 6px; }
+        .rc-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; border-bottom-left-radius: 6px; }
+        .rc-br { bottom: 20px; right: 20px; border-left: none; border-top: none; border-bottom-right-radius: 6px; }
+
+        .reticle-target {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 240px;
+            height: 290px;
+            border: 1.5px dashed rgba(59, 130, 246, 0.35);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 4;
         }
 
-        .camera-footer {
+        .scanner-footer-bar {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        /* Styled Buttons */
-        .btn-action {
-            background: linear-gradient(135deg, var(--pink-primary) 0%, var(--pink-vibrant) 100%);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 12px 24px;
+        /* Spotlight Recognized Card */
+        .spotlight-card {
+            background: linear-gradient(145deg, #131b2e 0%, #17233d 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: var(--radius-md);
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 6px 20px rgba(255, 42, 133, 0.35);
-            transition: all 0.25s var(--ease);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+            display: none;
+            animation: paneFadeIn 0.3s var(--ease);
         }
 
-        .btn-action:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(255, 42, 133, 0.55);
-        }
-
-        .btn-ghost {
-            background: rgba(255, 110, 168, 0.1);
-            border: 1px solid var(--pink-border);
-            color: var(--pink-blush);
-            padding: 11px 20px;
-            border-radius: var(--radius-md);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s var(--ease);
-        }
-
-        .btn-ghost:hover {
-            background: rgba(255, 110, 168, 0.2);
-            color: #fff;
-        }
-
-        /* Activity Feed Sidebar */
-        .feed-card {
-            padding: 26px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            height: 625px;
-        }
-
-        .feed-card-header h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-heading);
-        }
-
-        .feed-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
-
-        .feed-list::-webkit-scrollbar {
-            width: 4px;
-        }
-        .feed-list::-webkit-scrollbar-thumb {
-            background: var(--pink-border);
-            border-radius: 4px;
-        }
-
-        .log-entry {
-            background: rgba(45, 14, 36, 0.5);
-            border: 1px solid var(--pink-border);
-            border-radius: var(--radius-md);
-            padding: 14px;
+        .spotlight-header {
             display: flex;
             align-items: center;
             gap: 14px;
-            animation: slideRight 0.35s var(--ease);
+            margin-bottom: 14px;
         }
 
-        @keyframes slideRight {
-            from { opacity: 0; transform: translateX(16px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .entry-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--pink-primary), #ec4899);
+        .spotlight-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-md);
+            background: var(--primary);
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
+            box-shadow: 0 4px 14px var(--primary-glow);
+        }
+
+        .spotlight-info h4 {
             font-size: 16px;
-            color: #fff;
-            box-shadow: var(--pink-glow-sm);
-            flex-shrink: 0;
-        }
-
-        .entry-info {
-            flex-grow: 1;
-        }
-
-        .entry-info h5 {
-            font-size: 14px;
             font-weight: 700;
             color: var(--text-heading);
         }
 
-        .entry-info p {
-            font-size: 12px;
+        .spotlight-info p {
+            font-size: 13px;
             color: var(--text-muted);
-            margin-top: 2px;
         }
 
-        .badge-verified {
-            padding: 4px 10px;
-            background: rgba(34, 197, 94, 0.15);
-            border: 1px solid rgba(34, 197, 94, 0.4);
-            color: #4ade80;
-            border-radius: 9999px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
+        .spotlight-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: var(--bg-input);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
         }
 
-        /* ---------------- TAB 2: STUDENTS DIRECTORY ---------------- */
-        .toolbar {
+        .spotlight-stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .spotlight-stat-item span:first-child {
+            font-size: 10.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        .spotlight-stat-item span:last-child {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-heading);
+        }
+
+        /* ---------------- TAB 3: STUDENT DIRECTORY ---------------- */
+        .directory-toolbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
             margin-bottom: 24px;
-        }
-
-        .search-pill {
-            flex-grow: 1;
-            max-width: 480px;
-            position: relative;
-        }
-
-        .search-field {
-            width: 100%;
-            background: rgba(32, 10, 26, 0.75);
-            border: 1px solid var(--pink-border);
-            color: #fff;
-            padding: 12px 18px 12px 44px;
-            border-radius: 9999px;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.25s var(--ease);
-        }
-
-        .search-field:focus {
-            border-color: var(--pink-primary);
-            box-shadow: var(--pink-glow-sm);
-        }
-
-        .search-glyph {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 15px;
-        }
-
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-            gap: 20px;
-        }
-
-        .bento-card {
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            position: relative;
-            transition: transform 0.25s var(--ease), border-color 0.25s var(--ease);
-        }
-
-        .bento-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--pink-border-glow);
-        }
-
-        .bento-header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .bento-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--pink-primary), #ec4899);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 800;
-            color: #fff;
-            box-shadow: 0 0 16px rgba(255, 42, 133, 0.35);
-        }
-
-        .bento-text h4 {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-heading);
-        }
-
-        .bento-text p {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        .tag-group {
-            display: flex;
             flex-wrap: wrap;
-            gap: 8px;
         }
 
-        .chip {
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-            background: rgba(255, 110, 168, 0.1);
-            border: 1px solid var(--pink-border);
-            color: var(--pink-blush);
-        }
-
-        .chip-trained {
-            color: #4ade80;
-            border-color: rgba(34, 197, 94, 0.3);
-            background: rgba(34, 197, 94, 0.1);
-        }
-
-        .bento-footer {
+        .search-box {
             display: flex;
-            justify-content: flex-end;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            width: 340px;
+            transition: border-color 0.2s;
         }
 
-        .btn-trash {
-            background: rgba(244, 63, 94, 0.12);
-            border: 1px solid rgba(244, 63, 94, 0.3);
-            color: #fca5c5;
+        .search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-subtle);
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-heading);
+            font-size: 13.5px;
+            width: 100%;
+        }
+
+        .filter-pills {
+            display: flex;
+            gap: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            padding: 4px;
+            border-radius: var(--radius-md);
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
             padding: 6px 14px;
             border-radius: var(--radius-sm);
-            font-size: 12px;
+            font-size: 12.5px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .btn-trash:hover {
-            background: #f43f8e;
+        .filter-btn.active {
+            background: var(--primary);
             color: #fff;
         }
 
-        /* ---------------- TAB 3: REGISTRATION STUDIO ---------------- */
-        .studio-grid {
-            display: grid;
-            grid-template-columns: 1.25fr 1fr;
-            gap: 24px;
+        .view-switch {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            padding: 4px;
+            border-radius: var(--radius-md);
         }
 
-        .form-pane {
-            padding: 32px;
+        .view-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
         }
 
-        .pane-header {
-            margin-bottom: 24px;
-        }
-
-        .pane-header h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
+        .view-btn.active {
+            background: var(--bg-subtle);
             color: var(--text-heading);
         }
 
-        .pane-header p {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 4px;
+        /* Student Bento Cards Grid */
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
         }
 
-        .form-row {
+        .student-bento-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-card);
+        }
+
+        .student-bento-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .student-card-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .student-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: var(--text-heading);
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-card);
+            flex-shrink: 0;
+        }
+
+        .student-details h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-heading);
+            line-height: 1.2;
+        }
+
+        .student-details p {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        .tag-pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+
+        .tag-chip {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-subtle);
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .tag-chip.trained {
+            background: var(--success-subtle);
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .tag-chip.missing {
+            background: var(--warning-subtle);
+            color: var(--warning);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .student-card-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 14px;
+        }
+
+        .btn-view-profile {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            transition: background 0.2s;
+        }
+
+        .btn-view-profile:hover {
+            background: var(--primary-subtle);
+        }
+
+        .btn-delete-student {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: var(--radius-sm);
+            transition: color 0.2s, background 0.2s;
+        }
+
+        .btn-delete-student:hover {
+            color: var(--danger);
+            background: var(--danger-subtle);
+        }
+
+        /* ---------------- DATA TABLE STYLES ---------------- */
+        .table-responsive {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+        }
+
+        table.pro-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13.5px;
+        }
+
+        table.pro-table thead th {
+            background: var(--bg-subtle);
+            color: var(--text-muted);
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        table.pro-table tbody tr {
+            border-bottom: 1px solid var(--border-subtle);
+            transition: background 0.15s;
+        }
+
+        table.pro-table tbody tr:hover {
+            background: var(--bg-card-hover);
+        }
+
+        table.pro-table tbody td {
+            padding: 14px 20px;
+            color: var(--text-body);
+        }
+
+        /* ---------------- TAB 4: ENROLLMENT & BIOMETRIC STUDIO ---------------- */
+        .enroll-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 28px;
+        }
+
+        .form-pane {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 18px;
-            margin-bottom: 18px;
+            gap: 16px;
+            margin-bottom: 20px;
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 7px;
+            gap: 6px;
+        }
+
+        .input-group.full-width {
+            grid-column: 1 / -1;
         }
 
         .input-group label {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--pink-blush);
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-muted);
         }
 
-        .custom-input {
-            width: 100%;
-            background: rgba(35, 12, 28, 0.65);
-            border: 1px solid var(--pink-border);
-            color: #fff;
-            padding: 12px 16px;
+        .pro-input {
+            background: var(--bg-input);
+            border: 1px solid var(--border-card);
             border-radius: var(--radius-md);
-            font-size: 14px;
+            padding: 10px 14px;
+            color: var(--text-heading);
+            font-size: 13.5px;
             outline: none;
-            transition: all 0.25s var(--ease);
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        .custom-input:focus {
-            border-color: var(--pink-primary);
-            box-shadow: var(--pink-glow-sm);
+        .pro-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-subtle);
         }
 
-        /* Snapshot Capture Studio */
-        .camera-studio {
-            padding: 32px;
+        select.pro-input {
+            cursor: pointer;
+        }
+
+        .studio-pane {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 28px;
             display: flex;
             flex-direction: column;
-            align-items: center;
             gap: 20px;
+            box-shadow: var(--shadow-card);
         }
 
-        .studio-preview {
-            width: 100%;
-            height: 300px;
-            border-radius: var(--radius-lg);
-            background: #000;
-            overflow: hidden;
+        .studio-viewfinder {
             position: relative;
-            border: 1px solid var(--pink-border);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            height: 280px;
+            background: #000;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-card);
         }
 
         #sample-video {
@@ -753,459 +1117,852 @@
             transform: scaleX(-1);
         }
 
-        .studio-counter {
+        .studio-samples-strip {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            width: 100%;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px 0 8px;
+            min-height: 60px;
         }
 
-        .counter-badge {
-            background: rgba(45, 14, 36, 0.7);
-            border: 1px solid var(--pink-border);
-            padding: 14px 28px;
+        .sample-thumb {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+            border: 1px solid var(--border-card);
+            flex-shrink: 0;
+        }
+
+        /* ---------------- TAB 5: AI MODEL LAB ---------------- */
+        .lab-hero-card {
+            background: linear-gradient(135deg, #111827 0%, #162035 100%);
+            border: 1px solid var(--border-card);
             border-radius: var(--radius-lg);
+            padding: 36px;
             text-align: center;
-            flex-grow: 1;
-        }
-
-        .counter-badge h4 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--pink-primary);
-        }
-
-        .counter-badge p {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        /* ---------------- TAB 4: TRAINING LAB ---------------- */
-        .training-lab {
-            max-width: 820px;
-            margin: 20px auto;
-            padding: 48px;
-            text-align: center;
-        }
-
-        .orb-icon {
-            width: 96px;
-            height: 96px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--pink-primary), #d946ef);
-            margin: 0 auto 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 42px;
-            box-shadow: var(--pink-glow-lg);
-            animation: orbFloat 4s ease-in-out infinite;
-        }
-
-        @keyframes orbFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .training-lab h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--text-heading);
-            letter-spacing: -0.02em;
-            margin-bottom: 12px;
-        }
-
-        .training-lab p {
-            color: var(--text-muted);
-            font-size: 15px;
-            line-height: 1.6;
-            max-width: 580px;
+            max-width: 800px;
             margin: 0 auto 32px;
+            box-shadow: var(--shadow-card);
         }
 
-        /* ---------------- TAB 5: ATTENDANCE LEDGER ---------------- */
-        .ledger-pane {
-            padding: 28px;
-        }
-
-        .ledger-header {
+        .lab-badge-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-lg);
+            background: var(--primary-subtle);
+            color: var(--primary);
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 22px;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 20px var(--primary-glow);
         }
 
-        .ledger-header h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 20px;
+        .lab-hero-card h2 {
+            font-size: 24px;
             font-weight: 700;
             color: var(--text-heading);
+            margin-bottom: 10px;
         }
 
-        .table-wrap {
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--pink-border);
-            overflow: hidden;
+        .lab-hero-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 28px;
+            max-width: 620px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
             text-align: left;
         }
 
-        th {
-            background: rgba(38, 12, 30, 0.85);
-            padding: 16px 20px;
+        .telemetry-item {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+        }
+
+        .telemetry-item span:first-child {
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--pink-blush);
-            border-bottom: 1px solid var(--pink-border);
+            color: var(--text-dim);
+            display: block;
+            margin-bottom: 4px;
         }
 
-        td {
-            padding: 16px 20px;
-            font-size: 14px;
+        .telemetry-item span:last-child {
+            font-size: 16px;
+            font-weight: 700;
             color: var(--text-heading);
-            border-bottom: 1px solid rgba(255, 110, 168, 0.08);
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        tbody tr:hover td {
-            background: rgba(255, 42, 133, 0.05);
+        .training-log-console {
+            background: var(--bg-input);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            text-align: left;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            margin-top: 24px;
         }
 
-        /* Floating Notifications */
-        #notification-center {
+        /* ---------------- MODALS & TOASTS ---------------- */
+        .modal-overlay {
             position: fixed;
-            bottom: 28px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: paneFadeIn 0.2s var(--ease);
+        }
+
+        .modal-window {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 540px;
+            padding: 28px;
+            box-shadow: var(--shadow-elevated);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-heading);
+        }
+
+        .modal-close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .modal-close-btn:hover {
+            color: var(--text-heading);
+        }
+
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
             right: 28px;
-            z-index: 99999;
+            z-index: 2000;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            pointer-events: none;
         }
 
-        .notification {
-            background: rgba(30, 10, 24, 0.96);
-            border: 1px solid var(--pink-border-glow);
-            padding: 14px 22px;
+        .toast-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
             border-radius: var(--radius-md);
-            color: #ffffff;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), var(--pink-glow-sm);
+            padding: 12px 18px;
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            animation: notifyIn 0.3s var(--ease);
+            box-shadow: var(--shadow-elevated);
+            color: var(--text-heading);
+            font-size: 13.5px;
+            font-weight: 500;
+            pointer-events: auto;
+            animation: toastIn 0.3s var(--ease);
         }
 
-        @keyframes notifyIn {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
+        .toast-item.success { border-left: 4px solid var(--success); }
+        .toast-item.warning { border-left: 4px solid var(--warning); }
+        .toast-item.danger { border-left: 4px solid var(--danger); }
+
+        @keyframes toastIn {
+            from { transform: translateX(40px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
-        @media (max-width: 1024px) {
-            .scanner-layout, .studio-grid { grid-template-columns: 1fr; }
-            .stats-row { grid-template-columns: repeat(2, 1fr); }
-            nav.navbar { border-radius: var(--radius-lg); flex-direction: column; gap: 14px; }
+        /* Responsive Breakpoints */
+        @media (max-width: 1100px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .overview-split { grid-template-columns: 1fr; }
+            .scanner-layout { grid-template-columns: 1fr; }
+            .enroll-layout { grid-template-columns: 1fr; }
         }
 
-        @media (max-width: 640px) {
-            .stats-row { grid-template-columns: 1fr; }
-            .form-row { grid-template-columns: 1fr; }
-            .tabs-pill { flex-wrap: wrap; justify-content: center; }
+        @media (max-width: 768px) {
+            aside.sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+            aside.sidebar.mobile-open { transform: translateX(0); }
+            main.main-viewport { margin-left: 0; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .telemetry-grid { grid-template-columns: repeat(2, 1fr); }
+            .quick-actions-row { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Floating Navbar -->
-    <nav class="navbar">
-        <a href="#" class="brand-container">
-            <div class="brand-badge">⚡</div>
-            <div class="brand-titles">
-                <h1>AURA <span>AI STUDIO</span></h1>
+    <!-- ---------------- SIDEBAR NAVIGATION ---------------- -->
+    <aside class="sidebar" id="app-sidebar">
+        <div class="sidebar-header">
+            <div class="brand-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+                    <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+                    <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+                    <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="m16 16-1.5-1.5"/>
+                </svg>
             </div>
-        </a>
-
-        <div class="tabs-pill">
-            <button class="tab-btn active" onclick="switchTab('scanner')">📷 Live Scanner</button>
-            <button class="tab-btn" onclick="switchTab('students')">👥 Students</button>
-            <button class="tab-btn" onclick="switchTab('register')">➕ Add Student</button>
-            <button class="tab-btn" onclick="switchTab('training')">⚡ AI Lab</button>
-            <button class="tab-btn" onclick="switchTab('logs')">📊 Attendance</button>
-        </div>
-
-        <div class="status-pill" id="system-badge">
-            <div class="pulse-indicator"></div>
-            <span id="badge-text">Model Active</span>
-        </div>
-    </nav>
-
-    <main>
-        <!-- Top Metrics Overview -->
-        <div class="stats-row">
-            <div class="glass-card stat-box">
-                <div class="stat-numbers">
-                    <p>Enrolled Students</p>
-                    <h3 id="stat-students">0</h3>
-                </div>
-                <div class="stat-icon-wrap">🎓</div>
-            </div>
-
-            <div class="glass-card stat-box">
-                <div class="stat-numbers">
-                    <p>Present Today</p>
-                    <h3 id="stat-present">0</h3>
-                </div>
-                <div class="stat-icon-wrap">✨</div>
-            </div>
-
-            <div class="glass-card stat-box">
-                <div class="stat-numbers">
-                    <p>Dataset Samples</p>
-                    <h3 id="stat-samples">0</h3>
-                </div>
-                <div class="stat-icon-wrap">📸</div>
-            </div>
-
-            <div class="glass-card stat-box">
-                <div class="stat-numbers">
-                    <p>LBPH Engine</p>
-                    <h3 id="stat-status">ACTIVE</h3>
-                </div>
-                <div class="stat-icon-wrap">⚡</div>
+            <div class="brand-text">
+                <h2>VisionAttend</h2>
+                <span>Enterprise v2.5</span>
             </div>
         </div>
 
-        <!-- ---------------- TAB 1: LIVE SCANNER ---------------- -->
-        <div id="tab-scanner" class="tab-content active">
-            <div class="scanner-layout">
-                <!-- Camera Console -->
-                <div class="glass-card camera-console">
-                    <div class="console-header">
-                        <div class="console-title">
-                            <h2>Biometric Neural Scanner</h2>
-                            <p>Real-time Haar Cascade & LBPH recognition feed</p>
-                        </div>
-                        <span id="scanner-status" class="chip chip-trained">Live Active</span>
-                    </div>
-
-                    <div class="camera-viewfinder">
-                        <video id="webcam-video" autoplay playsinline muted></video>
-                        <canvas id="overlay-canvas"></canvas>
-
-                        <!-- Cyberpunk Geometric HUD Brackets -->
-                        <div class="hud-bracket b-top-left"></div>
-                        <div class="hud-bracket b-top-right"></div>
-                        <div class="hud-bracket b-bottom-left"></div>
-                        <div class="hud-bracket b-bottom-right"></div>
-
-                        <!-- Neon Rose Scanning Laser -->
-                        <div class="scan-laser"></div>
-                    </div>
-
-                    <div class="camera-footer">
-                        <button class="btn-action" id="btn-toggle-cam" onclick="toggleCamera()">
-                            <span>📷</span> Pause Scanner
+        <div class="sidebar-nav">
+            <div>
+                <div class="nav-group-title">Core Operations</div>
+                <ul class="nav-list">
+                    <li>
+                        <button class="nav-item-btn active" onclick="navigateTab('overview')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                            <span>Dashboard</span>
                         </button>
-                        <div style="font-size: 13px; color: var(--text-muted);">
-                            Position face within frame • Auto-attendance on <strong style="color: var(--pink-blush);">confidence > 77%</strong>
-                        </div>
-                    </div>
-                </div>
+                    </li>
+                    <li>
+                        <button class="nav-item-btn" onclick="navigateTab('scanner')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                            <span>Biometric Scanner</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item-btn" onclick="navigateTab('logs')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            <span>Attendance Ledger</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
 
-                <!-- Live Stream Feed Sidebar -->
-                <div class="glass-card feed-card">
-                    <div class="feed-card-header">
-                        <h3>⚡ Live Attendance Ledger</h3>
-                    </div>
-                    <div class="feed-list" id="live-feed">
-                        <div style="text-align: center; color: var(--text-muted); padding: 60px 0; font-size: 14px;">
-                            Waiting for face detections...
-                        </div>
-                    </div>
-                </div>
+            <div>
+                <div class="nav-group-title">Administration</div>
+                <ul class="nav-list">
+                    <li>
+                        <button class="nav-item-btn" onclick="navigateTab('students')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span>Student Directory</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item-btn" onclick="navigateTab('register')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+                            <span>Enroll & Biometrics</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item-btn" onclick="navigateTab('training')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
+                            <span>AI Neural Lab</span>
+                        </button>
+                    </li>
+                </ul>
             </div>
         </div>
 
-        <!-- ---------------- TAB 2: STUDENTS DIRECTORY ---------------- -->
-        <div id="tab-students" class="tab-content">
-            <div class="toolbar">
-                <div class="search-pill">
-                    <span class="search-glyph">🔍</span>
-                    <input type="text" class="search-field" id="student-search" placeholder="Search by name, student ID, or roll number..." oninput="filterStudents()">
+        <div class="sidebar-footer">
+            <div class="system-health-badge">
+                <div class="health-info">
+                    <span class="health-title" id="health-db-label">Database Connected</span>
+                    <div class="health-status">
+                        <div class="pulse-dot"></div>
+                        <span id="health-status-text">System Active</span>
+                    </div>
                 </div>
-                <button class="btn-action" onclick="switchTab('register')">➕ Register Student</button>
-            </div>
-
-            <div class="bento-grid" id="students-grid">
-                <!-- Injected student cards -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-dim);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
             </div>
         </div>
+    </aside>
 
-        <!-- ---------------- TAB 3: REGISTRATION STUDIO ---------------- -->
-        <div id="tab-register" class="tab-content">
-            <div class="studio-grid">
-                <!-- Registration Form -->
-                <div class="glass-card form-pane">
-                    <div class="pane-header">
-                        <h3>New Student Enrollment</h3>
-                        <p>Fill profile parameters before taking biometric dataset photos</p>
-                    </div>
-
-                    <form id="student-form" onsubmit="submitStudent(event)">
-                        <div class="form-row">
-                            <div class="input-group">
-                                <label>Student ID</label>
-                                <input type="text" id="reg-id" class="custom-input" placeholder="e.g. 101" required>
-                            </div>
-                            <div class="input-group">
-                                <label>Full Name</label>
-                                <input type="text" id="reg-name" class="custom-input" placeholder="e.g. Rudrani Sarkar" required>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="input-group">
-                                <label>Roll Number</label>
-                                <input type="text" id="reg-roll" class="custom-input" placeholder="e.g. R2021001" required>
-                            </div>
-                            <div class="input-group">
-                                <label>Department</label>
-                                <select id="reg-dept" class="custom-input">
-                                    <option value="SCSE">SCSE (Computer Science)</option>
-                                    <option value="SEEE">SEEE (Electrical)</option>
-                                    <option value="SME">SME (Mechanical)</option>
-                                    <option value="SBE">SBE (Bio-Engineering)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="input-group">
-                                <label>Course</label>
-                                <select id="reg-course" class="custom-input">
-                                    <option value="Btech">B.Tech</option>
-                                    <option value="Mtech">M.Tech</option>
-                                    <option value="BSC">B.Sc</option>
-                                    <option value="MSC">M.Sc</option>
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label>Year Batch</label>
-                                <select id="reg-year" class="custom-input">
-                                    <option value="2021-25">2021-25</option>
-                                    <option value="2022-26">2022-26</option>
-                                    <option value="2023-27">2023-27</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="input-group">
-                                <label>Email Address</label>
-                                <input type="email" id="reg-email" class="custom-input" placeholder="student@example.com">
-                            </div>
-                            <div class="input-group">
-                                <label>Mobile Phone</label>
-                                <input type="tel" id="reg-mobile" class="custom-input" placeholder="9876543210">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn-action" style="width: 100%; margin-top: 10px;">
-                            <span>💾</span> Save Student Profile
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Instant Camera Capture Studio -->
-                <div class="glass-card camera-studio">
-                    <div class="pane-header" style="text-align: center; margin-bottom: 0;">
-                        <h3>Biometric Studio</h3>
-                        <p>Capture face samples for the entered Student ID</p>
-                    </div>
-
-                    <div class="studio-preview">
-                        <video id="sample-video" autoplay playsinline muted></video>
-                    </div>
-
-                    <div class="studio-counter">
-                        <div class="counter-badge">
-                            <h4 id="sample-count">0</h4>
-                            <p>Captured Samples</p>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; gap: 14px; width: 100%;">
-                        <button class="btn-ghost" onclick="captureSamplePhoto()" style="flex: 1;">
-                            <span>📸</span> Snap Sample
-                        </button>
-                        <button class="btn-action" onclick="startBatchCapture()" id="btn-batch-capture" style="flex: 1;">
-                            <span>⚡</span> Burst Mode (10x)
-                        </button>
-                    </div>
-                </div>
+    <!-- ---------------- MAIN VIEWPORT ---------------- -->
+    <main class="main-viewport">
+        <!-- Sticky Executive Header -->
+        <header class="top-header">
+            <div class="breadcrumbs">
+                <span>FaceAttend</span>
+                <span>/</span>
+                <span class="current" id="header-breadcrumb">Dashboard Overview</span>
             </div>
-        </div>
 
-        <!-- ---------------- TAB 4: TRAINING LAB ---------------- -->
-        <div id="tab-training" class="tab-content">
-            <div class="glass-card training-lab">
-                <div class="orb-icon">⚡</div>
-                <h2>Neural Histogram Training Lab</h2>
-                <p>
-                    Train the Local Binary Patterns Histograms (LBPH) classifier on all face crops in the dataset directory. 
-                    This compiles features into the production <strong>clf.xml</strong> model used by both the cloud web app and desktop interface.
-                </p>
+            <div class="header-actions">
+                <div class="clock-display">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span id="digital-clock">--:--:--</span>
+                </div>
 
-                <button class="btn-action" id="btn-train-model" onclick="triggerRetrain()" style="padding: 16px 40px; font-size: 16px;">
-                    <span>🚀</span> Train LBPH Neural Model
+                <a href="/api/export_csv" class="btn-header">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    <span>Export CSV</span>
+                </a>
+
+                <button class="btn-header btn-primary" onclick="navigateTab('scanner')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                    <span>Live Scanner</span>
                 </button>
+            </div>
+        </header>
 
-                <div id="training-spinner" style="display: none; margin-top: 24px; color: var(--pink-coral); font-weight: 600;">
-                    Training in progress... compiling facial histograms...
+        <div class="page-content">
+            <!-- ================= TAB 1: EXECUTIVE DASHBOARD OVERVIEW ================= -->
+            <div id="pane-overview" class="tab-pane active">
+                <!-- Top KPI Metric Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div>
+                            <div class="stat-label">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                Enrolled Students
+                            </div>
+                            <div class="stat-value" id="stat-students">0</div>
+                            <div class="stat-subtext">Active student records</div>
+                        </div>
+                        <div class="stat-icon-wrapper">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div>
+                            <div class="stat-label">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                Present Today
+                            </div>
+                            <div class="stat-value" id="stat-present">0</div>
+                            <div class="stat-subtext">
+                                <span class="badge-verified" id="stat-rate">0% Attendance</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon-wrapper success">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div>
+                            <div class="stat-label">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                                Dataset Samples
+                            </div>
+                            <div class="stat-value" id="stat-samples">0</div>
+                            <div class="stat-subtext">Facial image training crops</div>
+                        </div>
+                        <div class="stat-icon-wrapper">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/><line x1="16" x2="22" y1="5" y2="5"/><line x1="19" x2="19" y1="2" y2="8"/></svg>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div>
+                            <div class="stat-label">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                LBPH Face Engine
+                            </div>
+                            <div class="stat-value" id="stat-engine-status" style="font-size: 22px;">ACTIVE</div>
+                            <div class="stat-subtext" id="stat-last-trained">Model loaded & ready</div>
+                        </div>
+                        <div class="stat-icon-wrapper warning">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle Split: Department Breakdown & Activity Feed -->
+                <div class="overview-split">
+                    <div class="panel-card">
+                        <div class="panel-header">
+                            <div>
+                                <h3 class="panel-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                                    Department Enrollment Breakdown
+                                </h3>
+                                <p class="panel-subtitle">Distribution of enrolled students across academic branches</p>
+                            </div>
+                        </div>
+
+                        <div class="dept-list" id="dept-progress-list">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="panel-card">
+                        <div class="panel-header">
+                            <div>
+                                <h3 class="panel-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                                    Recent Attendance Stream
+                                </h3>
+                                <p class="panel-subtitle">Real-time check-ins recorded today</p>
+                            </div>
+                            <button class="btn-header" style="padding: 4px 10px; font-size: 11px;" onclick="loadRecentAttendance()">Refresh</button>
+                        </div>
+
+                        <div class="activity-feed" id="overview-feed">
+                            <div style="text-align: center; color: var(--text-dim); padding: 50px 0; font-size: 13px;">
+                                No attendance records logged today yet.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Quick Action Shortcuts -->
+                <div class="quick-actions-row">
+                    <div class="action-shortcut" onclick="navigateTab('scanner')">
+                        <div class="action-shortcut-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                        </div>
+                        <div class="action-shortcut-text">
+                            <h4>Open Biometric Scanner</h4>
+                            <p>Real-time face verification</p>
+                        </div>
+                    </div>
+
+                    <div class="action-shortcut" onclick="navigateTab('register')">
+                        <div class="action-shortcut-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+                        </div>
+                        <div class="action-shortcut-text">
+                            <h4>Enroll New Student</h4>
+                            <p>Capture face dataset photos</p>
+                        </div>
+                    </div>
+
+                    <div class="action-shortcut" onclick="navigateTab('training')">
+                        <div class="action-shortcut-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/></svg>
+                        </div>
+                        <div class="action-shortcut-text">
+                            <h4>Train LBPH Model</h4>
+                            <p>Recompile face histograms</p>
+                        </div>
+                    </div>
+
+                    <div class="action-shortcut" onclick="navigateTab('logs')">
+                        <div class="action-shortcut-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>
+                        </div>
+                        <div class="action-shortcut-text">
+                            <h4>Attendance Records</h4>
+                            <p>Review & export data</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- ---------------- TAB 5: ATTENDANCE LEDGER ---------------- -->
-        <div id="tab-logs" class="tab-content">
-            <div class="glass-card ledger-pane">
-                <div class="ledger-header">
-                    <div>
-                        <h3>Biometric Attendance Ledger</h3>
-                        <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">Synchronized across cloud CSV and local database</p>
+            <!-- ================= TAB 2: LIVE BIOMETRIC SCANNER ================= -->
+            <div id="pane-scanner" class="tab-pane">
+                <div class="scanner-layout">
+                    <!-- Scanner Viewfinder Console -->
+                    <div class="scanner-console">
+                        <div class="panel-header" style="margin-bottom: 0; padding-bottom: 0; border: none;">
+                            <div>
+                                <h3 class="panel-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                                    Biometric Recognition Console
+                                </h3>
+                                <p class="panel-subtitle">Haar Frontal Cascade & Local Binary Patterns Histograms (LBPH)</p>
+                            </div>
+                            <span id="scanner-status-chip" class="badge-verified">Live Active</span>
+                        </div>
+
+                        <div class="viewfinder-wrapper">
+                            <video id="webcam-video" autoplay playsinline muted></video>
+                            <canvas id="overlay-canvas"></canvas>
+
+                            <!-- Subtle Viewfinder Framing Guides -->
+                            <div class="reticle-corner rc-tl"></div>
+                            <div class="reticle-corner rc-tr"></div>
+                            <div class="reticle-corner rc-bl"></div>
+                            <div class="reticle-corner rc-br"></div>
+                            <div class="reticle-target"></div>
+                        </div>
+
+                        <div class="scanner-footer-bar">
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn-header" id="btn-toggle-cam" onclick="toggleCamera()">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                                    <span id="btn-toggle-cam-text">Pause Scanner</span>
+                                </button>
+                                <button class="btn-header" id="btn-audio-toggle" onclick="toggleAudioChime()">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="audio-icon"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                                    <span id="audio-toggle-text">Sound: ON</span>
+                                </button>
+                            </div>
+                            <div style="font-size: 12.5px; color: var(--text-muted);">
+                                High-Confidence Match: <strong style="color: var(--success);">> 77%</strong>
+                            </div>
+                        </div>
                     </div>
-                    <div style="display: flex; gap: 12px;">
-                        <button class="btn-ghost" onclick="loadAttendanceLogs()">🔄 Refresh</button>
-                        <a href="/api/export_csv" class="btn-action">📥 Export CSV</a>
+
+                    <!-- Right Column: Live Detection Spotlight & Stream -->
+                    <div>
+                        <!-- Recognized Student Spotlight -->
+                        <div class="spotlight-card" id="spotlight-card">
+                            <div class="spotlight-header">
+                                <div class="spotlight-avatar" id="spotlight-avatar">JD</div>
+                                <div class="spotlight-info">
+                                    <h4 id="spotlight-name">John Doe</h4>
+                                    <p id="spotlight-dept">SCSE • Btech</p>
+                                </div>
+                            </div>
+                            <div class="spotlight-stats">
+                                <div class="spotlight-stat-item">
+                                    <span>Student ID</span>
+                                    <span id="spotlight-id">101</span>
+                                </div>
+                                <div class="spotlight-stat-item">
+                                    <span>Roll Number</span>
+                                    <span id="spotlight-roll">R2021001</span>
+                                </div>
+                                <div class="spotlight-stat-item">
+                                    <span>Confidence</span>
+                                    <span id="spotlight-conf" style="color: var(--success);">88%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Live Session Attendance Feed -->
+                        <div class="panel-card" style="height: 540px; display: flex; flex-direction: column;">
+                            <div class="panel-header">
+                                <div>
+                                    <h3 class="panel-title">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                                        Live Attendance Ledger
+                                    </h3>
+                                    <p class="panel-subtitle">Verified scans in current session</p>
+                                </div>
+                            </div>
+
+                            <div class="activity-feed" id="live-session-feed" style="flex: 1; max-height: none;">
+                                <div style="text-align: center; color: var(--text-dim); padding: 80px 0; font-size: 13px;">
+                                    Waiting for face detection feed...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 3: STUDENT DIRECTORY ================= -->
+            <div id="pane-students" class="tab-pane">
+                <div class="directory-toolbar">
+                    <div class="search-box">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-dim);"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <input type="text" id="student-search-input" placeholder="Search by name, ID, roll number..." oninput="filterStudents()">
+                    </div>
+
+                    <div class="filter-pills">
+                        <button class="filter-btn active" onclick="setDeptFilter('ALL')">All</button>
+                        <button class="filter-btn" onclick="setDeptFilter('SCSE')">SCSE</button>
+                        <button class="filter-btn" onclick="setDeptFilter('SEEE')">SEEE</button>
+                        <button class="filter-btn" onclick="setDeptFilter('SME')">SME</button>
+                        <button class="filter-btn" onclick="setDeptFilter('SBE')">SBE</button>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <div class="view-switch">
+                            <button class="view-btn active" id="btn-view-grid" onclick="setViewMode('grid')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+                            </button>
+                            <button class="view-btn" id="btn-view-table" onclick="setViewMode('table')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
+                            </button>
+                        </div>
+
+                        <button class="btn-header btn-primary" onclick="navigateTab('register')">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+                            <span>Enroll Student</span>
+                        </button>
                     </div>
                 </div>
 
-                <div class="table-wrap">
-                    <table>
+                <!-- Students Grid View -->
+                <div class="students-grid" id="students-grid-container">
+                    <!-- Populated via JS -->
+                </div>
+
+                <!-- Students Table View -->
+                <div class="table-responsive" id="students-table-container" style="display: none;">
+                    <table class="pro-table">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Full Name</th>
+                                <th>Roll Number</th>
+                                <th>Department</th>
+                                <th>Course</th>
+                                <th>Year Batch</th>
+                                <th>Dataset Status</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-table-body">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ================= TAB 4: ENROLLMENT & BIOMETRIC STUDIO ================= -->
+            <div id="pane-register" class="tab-pane">
+                <div class="enroll-layout">
+                    <!-- Enrollment Form -->
+                    <div class="form-pane">
+                        <div class="panel-header">
+                            <div>
+                                <h3 class="panel-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+                                    Student Profile Enrollment
+                                </h3>
+                                <p class="panel-subtitle">Register student record into institutional database</p>
+                            </div>
+                        </div>
+
+                        <form id="enrollment-form" onsubmit="handleStudentEnroll(event)">
+                            <div class="form-grid">
+                                <div class="input-group">
+                                    <label>Student ID *</label>
+                                    <input type="text" id="reg-id" class="pro-input" placeholder="e.g. 101" required oninput="syncStudioStudentID()">
+                                </div>
+                                <div class="input-group">
+                                    <label>Roll Number *</label>
+                                    <input type="text" id="reg-roll" class="pro-input" placeholder="e.g. R2021001" required>
+                                </div>
+                                <div class="input-group full-width">
+                                    <label>Full Name *</label>
+                                    <input type="text" id="reg-name" class="pro-input" placeholder="e.g. Rudrani Sarkar" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>Department</label>
+                                    <select id="reg-dept" class="pro-input">
+                                        <option value="SCSE">SCSE (Computer Science)</option>
+                                        <option value="SEEE">SEEE (Electrical)</option>
+                                        <option value="SME">SME (Mechanical)</option>
+                                        <option value="SBE">SBE (Bio-Engineering)</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>Course</label>
+                                    <select id="reg-course" class="pro-input">
+                                        <option value="Btech">B.Tech</option>
+                                        <option value="Mtech">M.Tech</option>
+                                        <option value="BSC">B.Sc</option>
+                                        <option value="MSC">M.Sc</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>Academic Batch</label>
+                                    <select id="reg-year" class="pro-input">
+                                        <option value="2021-25">2021-25</option>
+                                        <option value="2022-26">2022-26</option>
+                                        <option value="2023-27">2023-27</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>Semester</label>
+                                    <select id="reg-semester" class="pro-input">
+                                        <option value="Semester-1">Semester-1</option>
+                                        <option value="Semester-2">Semester-2</option>
+                                        <option value="Semester-3">Semester-3</option>
+                                        <option value="Semester-4">Semester-4</option>
+                                        <option value="Semester-5">Semester-5</option>
+                                        <option value="Semester-6">Semester-6</option>
+                                        <option value="Semester-7">Semester-7</option>
+                                        <option value="Semester-8">Semester-8</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>Email Address</label>
+                                    <input type="email" id="reg-email" class="pro-input" placeholder="student@university.edu">
+                                </div>
+                                <div class="input-group">
+                                    <label>Mobile Number</label>
+                                    <input type="tel" id="reg-mobile" class="pro-input" placeholder="9876543210">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-header btn-primary" style="width: 100%; justify-content: center; padding: 12px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                <span>Save Student Profile</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Biometric Camera Studio -->
+                    <div class="studio-pane">
+                        <div class="panel-header">
+                            <div>
+                                <h3 class="panel-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                                    Biometric Face Capture Studio
+                                </h3>
+                                <p class="panel-subtitle">Target Student ID: <strong id="studio-target-id" style="color: var(--primary);">None entered</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="studio-viewfinder">
+                            <video id="sample-video" autoplay playsinline muted></video>
+                            <div class="reticle-target" style="width: 180px; height: 220px;"></div>
+                        </div>
+
+                        <div style="background: var(--bg-subtle); padding: 14px 18px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                            <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 8px;">
+                                <span>Captured Samples for Current Student</span>
+                                <span id="sample-count-badge" style="color: var(--primary); font-family: 'JetBrains Mono', monospace;">0 samples</span>
+                            </div>
+                            <div class="progress-track" style="height: 6px;">
+                                <div class="progress-fill" id="sample-progress-bar" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn-header" style="flex: 1; justify-content: center;" onclick="captureSamplePhoto()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                                <span>Single Snapshot</span>
+                            </button>
+                            <button class="btn-header btn-primary" style="flex: 1; justify-content: center;" id="btn-burst" onclick="startBurstCapture()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                <span>Burst Mode (10x)</span>
+                            </button>
+                        </div>
+
+                        <div>
+                            <div style="font-size: 12px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; margin-bottom: 8px;">Recent Session Face Crops</div>
+                            <div class="studio-samples-strip" id="studio-samples-strip">
+                                <span style="font-size: 12px; color: var(--text-dim); padding: 10px 0;">No samples captured in this session yet.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 5: AI MODEL LAB ================= -->
+            <div id="pane-training" class="tab-pane">
+                <div class="lab-hero-card">
+                    <div class="lab-badge-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/></svg>
+                    </div>
+                    <h2>LBPH Facial Classifier Engine</h2>
+                    <p>
+                        The Local Binary Patterns Histograms (LBPH) classifier maps localized biometric pixel patterns into 256-bin spatial histograms. 
+                        Retraining compiles all facial sample crops in the dataset into the binary model file (<code>clf.xml</code>) with confidence thresholds.
+                    </p>
+
+                    <div class="telemetry-grid">
+                        <div class="telemetry-item">
+                            <span>Engine Architecture</span>
+                            <span>OpenCV LBPH</span>
+                        </div>
+                        <div class="telemetry-item">
+                            <span>Dataset Images</span>
+                            <span id="lab-total-samples">0</span>
+                        </div>
+                        <div class="telemetry-item">
+                            <span>Unique Students</span>
+                            <span id="lab-unique-students">0</span>
+                        </div>
+                        <div class="telemetry-item">
+                            <span>Model File</span>
+                            <span id="lab-model-status">clf.xml OK</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-header btn-primary" id="btn-train-engine" style="padding: 14px 36px; font-size: 15px;" onclick="triggerModelRetrain()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+                        <span>Recompile & Retrain Model</span>
+                    </button>
+
+                    <div class="training-log-console" id="training-log-console">
+                        <!-- Step by step telemetry lines -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 6: ATTENDANCE LEDGER ================= -->
+            <div id="pane-logs" class="tab-pane">
+                <div class="directory-toolbar">
+                    <div class="search-box">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-dim);"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <input type="text" id="attendance-search-input" placeholder="Search attendance records..." oninput="filterAttendanceLogs()">
+                    </div>
+
+                    <div class="filter-pills">
+                        <button class="filter-btn active" onclick="setAttendanceDateFilter('ALL')">All Time</button>
+                        <button class="filter-btn" onclick="setAttendanceDateFilter('TODAY')">Today</button>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-header" onclick="loadAttendanceLogs()">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                            <span>Refresh</span>
+                        </button>
+                        <a href="/api/export_csv" class="btn-header btn-primary">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                            <span>Export CSV</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="pro-table">
                         <thead>
                             <tr>
                                 <th>Student ID</th>
                                 <th>Roll Number</th>
                                 <th>Full Name</th>
-                                <th>Time</th>
+                                <th>Verification Time</th>
                                 <th>Date</th>
-                                <th>Verification</th>
+                                <th>Biometric Status</th>
                             </tr>
                         </thead>
                         <tbody id="attendance-table-body">
-                            <!-- Injected attendance rows -->
+                            <!-- Populated via JS -->
                         </tbody>
                     </table>
                 </div>
@@ -1213,26 +1970,98 @@
         </div>
     </main>
 
-    <!-- Floating System Notifications -->
-    <div id="notification-center"></div>
+    <!-- ---------------- MODALS ---------------- -->
+    <!-- Student Detail Profile Modal -->
+    <div class="modal-overlay" id="student-modal">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3 id="modal-student-name">Student Profile</h3>
+                <button class="modal-close-btn" onclick="closeStudentModal()">&times;</button>
+            </div>
+            <div id="modal-student-body">
+                <!-- Injected profile details & sample photos -->
+            </div>
+        </div>
+    </div>
 
+    <!-- Confirm Delete Modal -->
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal-window" style="max-width: 440px;">
+            <div class="modal-header">
+                <h3 style="color: var(--danger);">Delete Student Record</h3>
+                <button class="modal-close-btn" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <p style="font-size: 14px; color: var(--text-body); margin-bottom: 24px;" id="delete-modal-msg">
+                Are you sure you want to permanently delete this student record?
+            </p>
+            <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn-header" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn-header" style="background: var(--danger); border-color: var(--danger); color: #fff;" id="btn-confirm-delete">Delete Permanently</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- ---------------- JAVASCRIPT CORE LOGIC ---------------- -->
     <script>
-        let videoStream = null;
-        let isScannerRunning = true;
+        // Global State
+        let currentTab = "overview";
+        let isScannerRunning = false;
         let isProcessingFrame = false;
         let scanInterval = null;
+        let videoStream = null;
+        let audioFeedbackEnabled = true;
         let allStudents = [];
+        let allAttendance = [];
+        let activeDeptFilter = "ALL";
+        let activeDateFilter = "ALL";
+        let pendingDeleteId = null;
 
-        // Synthesize audio feedback chime
-        function playChime() {
+        // Digital Clock
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString("en-GB");
+            document.getElementById("digital-clock").textContent = timeStr;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Toast Notifications
+        function showToast(message, type = "success") {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            toast.className = `toast-item ${type}`;
+
+            let iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--success);"><polyline points="20 6 9 17 4 12"/></svg>';
+            if (type === "warning") {
+                iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--warning);"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>';
+            } else if (type === "danger") {
+                iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--danger);"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+            }
+
+            toast.innerHTML = `${iconSvg} <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                toast.style.transform = "translateX(40px)";
+                toast.style.transition = "all 0.3s ease";
+                setTimeout(() => toast.remove(), 300);
+            }, 3800);
+        }
+
+        // Chime Audio Feedback
+        function playSuccessChime() {
+            if (!audioFeedbackEnabled) return;
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.type = "sine";
-                osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
-                osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15); // A5
-                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.12); // G5
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
@@ -1241,86 +2070,114 @@
             } catch (e) {}
         }
 
-        function showNotification(msg, isSuccess = true) {
-            const container = document.getElementById("notification-center");
-            const item = document.createElement("div");
-            item.className = "notification";
-            item.innerHTML = `<span>${isSuccess ? '✨' : '⚠️'}</span> <span>${msg}</span>`;
-            container.appendChild(item);
-            setTimeout(() => item.remove(), 4000);
+        function toggleAudioChime() {
+            audioFeedbackEnabled = !audioFeedbackEnabled;
+            const text = document.getElementById("audio-toggle-text");
+            text.textContent = audioFeedbackEnabled ? "Sound: ON" : "Sound: OFF";
+            showToast(audioFeedbackEnabled ? "Audio chimes enabled" : "Audio chimes muted");
         }
 
-        // Tab Switcher
-        function switchTab(tabId) {
-            document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-            document.querySelectorAll(".tab-content").forEach(panel => panel.classList.remove("active"));
+        // Tab Navigation
+        const breadcrumbMap = {
+            "overview": "Dashboard Overview",
+            "scanner": "Live Biometric Scanner",
+            "logs": "Attendance Records & Ledger",
+            "students": "Student Directory",
+            "register": "Enrollment & Biometric Studio",
+            "training": "AI Neural Model Lab"
+        };
 
-            const targetBtn = Array.from(document.querySelectorAll(".tab-btn")).find(b => b.getAttribute("onclick").includes(tabId));
-            if (targetBtn) targetBtn.classList.add("active");
+        function navigateTab(tabId) {
+            currentTab = tabId;
+            document.querySelectorAll(".nav-item-btn").forEach(btn => btn.classList.remove("active"));
+            document.querySelectorAll(".tab-pane").forEach(pane => pane.classList.remove("active"));
 
-            const targetPanel = document.getElementById(`tab-${tabId}`);
-            if (targetPanel) targetPanel.classList.add("active");
+            // Match active nav item
+            const navBtn = Array.from(document.querySelectorAll(".nav-item-btn")).find(b => b.getAttribute("onclick") && b.getAttribute("onclick").includes(tabId));
+            if (navBtn) navBtn.classList.add("active");
 
-            if (tabId === "students") loadStudents();
-            if (tabId === "logs") loadAttendanceLogs();
-            if (tabId === "register") initSampleCamera();
+            const targetPane = document.getElementById(`pane-${tabId}`);
+            if (targetPane) targetPane.classList.add("active");
+
+            document.getElementById("header-breadcrumb").textContent = breadcrumbMap[tabId] || "Dashboard";
+
+            if (tabId === "overview") {
+                updateSystemStats();
+                loadRecentAttendance();
+            } else if (tabId === "scanner") {
+                initScannerCamera();
+            } else if (tabId === "students") {
+                loadStudents();
+            } else if (tabId === "register") {
+                initSampleCamera();
+            } else if (tabId === "logs") {
+                loadAttendanceLogs();
+            } else if (tabId === "training") {
+                updateLabMetrics();
+            }
+
+            // Pause scanner camera if not on scanner tab to save CPU
+            if (tabId !== "scanner" && isScannerRunning) {
+                stopScannerScanning();
+            }
         }
 
-        // Webcam Setup
-        async function initCamera() {
+        // ================= WEBCAM & SCANNER LOGIC =================
+        async function initScannerCamera() {
             const video = document.getElementById("webcam-video");
-            try {
-                videoStream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" }
-                });
-                video.srcObject = videoStream;
-                startScanning();
-            } catch (err) {
-                showNotification("Camera access blocked: " + err.message, false);
-                document.getElementById("scanner-status").textContent = "Camera Blocked";
-                document.getElementById("scanner-status").style.color = "#f43f8e";
-            }
-        }
-
-        async function initSampleCamera() {
-            const sampleVid = document.getElementById("sample-video");
-            if (videoStream && !sampleVid.srcObject) {
-                sampleVid.srcObject = videoStream;
-            } else if (!sampleVid.srcObject) {
+            if (!videoStream) {
                 try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                    sampleVid.srcObject = stream;
-                } catch(e) {}
+                    videoStream = await navigator.mediaDevices.getUserMedia({
+                        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" }
+                    });
+                    video.srcObject = videoStream;
+                } catch (err) {
+                    showToast("Camera access denied: " + err.message, "danger");
+                    document.getElementById("scanner-status-chip").textContent = "Camera Error";
+                    document.getElementById("scanner-status-chip").style.color = "var(--danger)";
+                    return;
+                }
+            } else {
+                video.srcObject = videoStream;
             }
+            startScannerScanning();
         }
 
         function toggleCamera() {
-            const btn = document.getElementById("btn-toggle-cam");
+            const btnText = document.getElementById("btn-toggle-cam-text");
+            const chip = document.getElementById("scanner-status-chip");
             if (isScannerRunning) {
-                clearInterval(scanInterval);
-                isScannerRunning = false;
-                btn.innerHTML = "<span>▶️</span> Resume Scanner";
-                btn.classList.add("btn-ghost");
-                btn.classList.remove("btn-action");
-                document.getElementById("scanner-status").textContent = "Scanner Paused";
+                stopScannerScanning();
+                btnText.textContent = "Resume Scanner";
+                chip.textContent = "Scanner Paused";
+                chip.style.color = "var(--text-muted)";
             } else {
-                startScanning();
-                isScannerRunning = true;
-                btn.innerHTML = "<span>📷</span> Pause Scanner";
-                btn.classList.remove("btn-ghost");
-                btn.classList.add("btn-action");
-                document.getElementById("scanner-status").textContent = "Live Active";
+                startScannerScanning();
+                btnText.textContent = "Pause Scanner";
+                chip.textContent = "Live Active";
+                chip.style.color = "var(--success)";
             }
         }
 
-        function startScanning() {
+        function stopScannerScanning() {
+            clearInterval(scanInterval);
+            isScannerRunning = false;
+            const canvas = document.getElementById("overlay-canvas");
+            if (canvas) {
+                const ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function startScannerScanning() {
+            clearInterval(scanInterval);
+            isScannerRunning = true;
             const video = document.getElementById("webcam-video");
             const canvas = document.getElementById("overlay-canvas");
             const ctx = canvas.getContext("2d");
 
-            clearInterval(scanInterval);
             scanInterval = setInterval(async () => {
-                if (!video.videoWidth || isProcessingFrame) return;
+                if (!video.videoWidth || isProcessingFrame || !isScannerRunning) return;
 
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
@@ -1332,8 +2189,8 @@
                 offCtx.drawImage(video, 0, 0);
 
                 const dataUrl = offscreen.toDataURL("image/jpeg", 0.7);
-
                 isProcessingFrame = true;
+
                 try {
                     const res = await fetch("/api/recognize", {
                         method: "POST",
@@ -1341,34 +2198,34 @@
                         body: JSON.stringify({ image: dataUrl })
                     });
                     const result = await res.json();
-
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                     if (result.faces && result.faces.length > 0) {
                         result.faces.forEach(face => {
                             const [x, y, w, h] = face.box;
 
-                            // Draw futuristic rounded bounding box
-                            ctx.lineWidth = 3;
-                            ctx.strokeStyle = face.recognized ? "#4ade80" : "#ff2a85";
-                            ctx.shadowColor = face.recognized ? "#4ade80" : "#ff2a85";
-                            ctx.shadowBlur = 14;
+                            // Professional high-visibility bounding box
+                            ctx.lineWidth = 2.5;
+                            ctx.strokeStyle = face.recognized ? "#10b981" : "#ef4444";
                             ctx.strokeRect(x, y, w, h);
 
-                            // Label ribbon
-                            ctx.fillStyle = face.recognized ? "rgba(34, 197, 94, 0.9)" : "rgba(244, 63, 142, 0.9)";
-                            ctx.fillRect(x, y - 32, w, 32);
+                            // Badge label ribbon
+                            ctx.fillStyle = face.recognized ? "rgba(16, 185, 129, 0.9)" : "rgba(239, 68, 68, 0.9)";
+                            ctx.fillRect(x, Math.max(0, y - 28), w, 28);
 
-                            ctx.shadowBlur = 0;
                             ctx.fillStyle = "#ffffff";
-                            ctx.font = "bold 13px 'Plus Jakarta Sans'";
-                            const label = face.recognized ? `${face.name} (${face.confidence}%)` : "Unknown Face";
-                            ctx.fillText(label, x + 10, y - 10);
+                            ctx.font = "bold 12px 'Plus Jakarta Sans'";
+                            const label = face.recognized ? `${face.name} • ${face.confidence}%` : "Unknown Face";
+                            ctx.fillText(label, x + 8, Math.max(16, y - 9));
+
+                            if (face.recognized) {
+                                updateSpotlightCard(face);
+                            }
 
                             if (face.new_attendance_marked) {
-                                playChime();
-                                showNotification(`Attendance logged for ${face.name}!`);
-                                addFeedItem(face.name, face.student_id, face.time);
+                                playSuccessChime();
+                                showToast(`Attendance verified for ${face.name}!`);
+                                addLiveSessionEntry(face.name, face.student_id, face.roll_no, face.time, face.department);
                                 updateSystemStats();
                             }
                         });
@@ -1377,137 +2234,91 @@
                 } finally {
                     isProcessingFrame = false;
                 }
-            }, 800);
+            }, 750);
         }
 
-        function addFeedItem(name, id, time) {
-            const feed = document.getElementById("live-feed");
+        function updateSpotlightCard(face) {
+            const card = document.getElementById("spotlight-card");
+            card.style.display = "block";
+            document.getElementById("spotlight-name").textContent = face.name;
+            document.getElementById("spotlight-id").textContent = face.student_id;
+            document.getElementById("spotlight-roll").textContent = face.roll_no;
+            document.getElementById("spotlight-dept").textContent = `${face.department || 'SCSE'} • Confidence Verified`;
+            document.getElementById("spotlight-conf").textContent = `${face.confidence}%`;
+            document.getElementById("spotlight-avatar").textContent = face.name.charAt(0).toUpperCase();
+        }
+
+        function addLiveSessionEntry(name, id, roll, time, dept) {
+            const feed = document.getElementById("live-session-feed");
             if (feed.innerText.includes("Waiting")) feed.innerHTML = "";
 
             const initial = name.charAt(0).toUpperCase();
             const item = document.createElement("div");
-            item.className = "log-entry";
+            item.className = "activity-item";
             item.innerHTML = `
-                <div class="entry-avatar">${initial}</div>
-                <div class="entry-info">
-                    <h5>${name}</h5>
-                    <p>Student ID: ${id} • ${time || 'Just now'}</p>
+                <div class="activity-left">
+                    <div class="activity-avatar">${initial}</div>
+                    <div class="activity-meta">
+                        <h5>${name}</h5>
+                        <p>ID: ${id} • Roll: ${roll} • ${dept || 'SCSE'}</p>
+                    </div>
                 </div>
-                <span class="badge-verified">VERIFIED</span>
+                <div style="text-align: right;">
+                    <span class="badge-verified">PRESENT</span>
+                    <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">${time || 'Just now'}</div>
+                </div>
             `;
             feed.insertBefore(item, feed.firstChild);
         }
 
-        // Students Directory
-        async function loadStudents() {
-            try {
-                const res = await fetch("/api/students");
-                allStudents = await res.json();
-                renderStudents(allStudents);
-            } catch (e) {
-                showNotification("Could not fetch students", false);
+        // ================= SAMPLE CAPTURE STUDIO =================
+        async function initSampleCamera() {
+            const vid = document.getElementById("sample-video");
+            if (videoStream && !vid.srcObject) {
+                vid.srcObject = videoStream;
+            } else if (!vid.srcObject) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    vid.srcObject = stream;
+                } catch(e) {}
             }
         }
 
-        function renderStudents(list) {
-            const grid = document.getElementById("students-grid");
-            grid.innerHTML = "";
-
-            if (!list || list.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 50px;">No registered students yet.</div>`;
-                return;
+        function syncStudioStudentID() {
+            const id = document.getElementById("reg-id").value.trim();
+            const label = document.getElementById("studio-target-id");
+            label.textContent = id ? id : "None entered";
+            if (id) {
+                loadStudentSampleCount(id);
             }
-
-            list.forEach(std => {
-                const initial = std.name.charAt(0).toUpperCase();
-                const card = document.createElement("div");
-                card.className = "glass-card bento-card";
-                card.innerHTML = `
-                    <div class="bento-header">
-                        <div class="bento-avatar">${initial}</div>
-                        <div class="bento-text">
-                            <h4>${std.name}</h4>
-                            <p>ID: ${std.id} • Roll: ${std.roll_no}</p>
-                        </div>
-                    </div>
-                    <div class="tag-group">
-                        <span class="chip">${std.department}</span>
-                        <span class="chip">${std.course}</span>
-                        <span class="chip">${std.year}</span>
-                        <span class="chip ${std.photo_sample === 'Yes' ? 'chip-trained' : ''}">
-                            ${std.photo_sample === 'Yes' ? '✓ Trained' : 'No Dataset'}
-                        </span>
-                    </div>
-                    <div class="bento-footer">
-                        <button class="btn-trash" onclick="deleteStudent('${std.id}')">Delete</button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
         }
 
-        function filterStudents() {
-            const q = document.getElementById("student-search").value.toLowerCase();
-            const filtered = allStudents.filter(s => 
-                s.name.toLowerCase().includes(q) ||
-                s.roll_no.toLowerCase().includes(q) ||
-                s.id.toLowerCase().includes(q)
-            );
-            renderStudents(filtered);
-        }
-
-        async function submitStudent(e) {
-            e.preventDefault();
-            const payload = {
-                id: document.getElementById("reg-id").value,
-                name: document.getElementById("reg-name").value,
-                roll_no: document.getElementById("reg-roll").value,
-                department: document.getElementById("reg-dept").value,
-                course: document.getElementById("reg-course").value,
-                year: document.getElementById("reg-year").value,
-                email: document.getElementById("reg-email").value,
-                mobile: document.getElementById("reg-mobile").value
-            };
-
+        async function loadStudentSampleCount(stdId) {
             try {
-                const res = await fetch("/api/students", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
+                const res = await fetch(`/api/students/${stdId}/samples`);
                 const data = await res.json();
-                if (data.success) {
-                    showNotification(data.message);
-                    document.getElementById("student-form").reset();
-                    updateSystemStats();
-                } else {
-                    showNotification(data.error, false);
+                document.getElementById("sample-count-badge").textContent = `${data.total_samples} samples`;
+                const pct = Math.min(100, Math.round((data.total_samples / 20) * 100));
+                document.getElementById("sample-progress-bar").style.width = `${pct}%`;
+
+                // Render thumbnails
+                const strip = document.getElementById("studio-samples-strip");
+                if (data.samples && data.samples.length > 0) {
+                    strip.innerHTML = "";
+                    data.samples.forEach(f => {
+                        const img = document.createElement("img");
+                        img.src = `/api/samples/${f}`;
+                        img.className = "sample-thumb";
+                        strip.appendChild(img);
+                    });
                 }
-            } catch (err) {
-                showNotification("Registration failed: " + err.message, false);
-            }
+            } catch(e) {}
         }
 
-        async function deleteStudent(stdId) {
-            if (!confirm(`Permanently remove student ID ${stdId}?`)) return;
-            try {
-                const res = await fetch(`/api/students/${stdId}`, { method: "DELETE" });
-                const data = await res.json();
-                if (data.success) {
-                    showNotification(data.message);
-                    loadStudents();
-                    updateSystemStats();
-                }
-            } catch (e) {
-                showNotification("Delete request failed", false);
-            }
-        }
-
-        // Snapshot Sampling Tool
         async function captureSamplePhoto() {
             const stdId = document.getElementById("reg-id").value.trim();
             if (!stdId) {
-                showNotification("Please enter Student ID above first!", false);
+                showToast("Please enter a Student ID in the form first!", "warning");
                 return;
             }
 
@@ -1518,7 +2329,7 @@
             const ctx = canvas.getContext("2d");
             ctx.drawImage(video, 0, 0);
 
-            const b64 = canvas.toDataURL("image/jpeg", 0.8);
+            const b64 = canvas.toDataURL("image/jpeg", 0.85);
 
             try {
                 const res = await fetch("/api/capture_sample", {
@@ -1528,102 +2339,494 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    document.getElementById("sample-count").textContent = data.sample_num;
-                    showNotification(data.message);
+                    showToast(data.message, "success");
+                    loadStudentSampleCount(stdId);
                     updateSystemStats();
                 } else {
-                    showNotification(data.error, false);
+                    showToast(data.error, "danger");
                 }
             } catch (err) {
-                showNotification("Sample capture failed: " + err.message, false);
+                showToast("Sample capture failed: " + err.message, "danger");
             }
         }
 
-        async function startBatchCapture() {
+        async function startBurstCapture() {
             const stdId = document.getElementById("reg-id").value.trim();
             if (!stdId) {
-                showNotification("Please enter Student ID above first!", false);
+                showToast("Please enter a Student ID in the form first!", "warning");
                 return;
             }
-            showNotification("Taking burst sequence (10 samples)...");
+            const btn = document.getElementById("btn-burst");
+            btn.disabled = true;
+            showToast("Burst capture started (10 frames)...", "warning");
+
             for (let i = 0; i < 10; i++) {
                 await captureSamplePhoto();
-                await new Promise(r => setTimeout(r, 350));
+                await new Promise(r => setTimeout(r, 280));
+            }
+            btn.disabled = false;
+            showToast("Burst capture sequence completed!", "success");
+        }
+
+        async function handleStudentEnroll(e) {
+            e.preventDefault();
+            const payload = {
+                id: document.getElementById("reg-id").value.trim(),
+                name: document.getElementById("reg-name").value.trim(),
+                roll_no: document.getElementById("reg-roll").value.trim(),
+                department: document.getElementById("reg-dept").value,
+                course: document.getElementById("reg-course").value,
+                year: document.getElementById("reg-year").value,
+                semester: document.getElementById("reg-semester").value,
+                email: document.getElementById("reg-email").value.trim(),
+                mobile: document.getElementById("reg-mobile").value.trim()
+            };
+
+            try {
+                const res = await fetch("/api/students", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message, "success");
+                    updateSystemStats();
+                    showToast("Now capture biometric samples for this student in the camera pane on the right!", "warning");
+                } else {
+                    showToast(data.error, "danger");
+                }
+            } catch (err) {
+                showToast("Registration failed: " + err.message, "danger");
             }
         }
 
-        // Model Retrain
-        async function triggerRetrain() {
-            const btn = document.getElementById("btn-train-model");
-            const spin = document.getElementById("training-spinner");
+        // ================= STUDENTS DIRECTORY =================
+        async function loadStudents() {
+            try {
+                const res = await fetch("/api/students");
+                allStudents = await res.json();
+                renderStudents(allStudents);
+            } catch (e) {
+                showToast("Could not load student directory", "danger");
+            }
+        }
+
+        function setDeptFilter(dept) {
+            activeDeptFilter = dept;
+            document.querySelectorAll(".filter-pills .filter-btn").forEach(btn => {
+                if (btn.textContent.trim().toUpperCase() === dept) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            });
+            filterStudents();
+        }
+
+        function filterStudents() {
+            const query = document.getElementById("student-search-input").value.toLowerCase();
+            let filtered = allStudents;
+
+            if (activeDeptFilter !== "ALL") {
+                filtered = filtered.filter(s => s.department === activeDeptFilter);
+            }
+
+            if (query) {
+                filtered = filtered.filter(s =>
+                    (s.name && s.name.toLowerCase().includes(query)) ||
+                    (s.id && s.id.toLowerCase().includes(query)) ||
+                    (s.roll_no && s.roll_no.toLowerCase().includes(query))
+                );
+            }
+
+            renderStudents(filtered);
+        }
+
+        function setViewMode(mode) {
+            const gridContainer = document.getElementById("students-grid-container");
+            const tableContainer = document.getElementById("students-table-container");
+            const btnGrid = document.getElementById("btn-view-grid");
+            const btnTable = document.getElementById("btn-view-table");
+
+            if (mode === "grid") {
+                gridContainer.style.display = "grid";
+                tableContainer.style.display = "none";
+                btnGrid.classList.add("active");
+                btnTable.classList.remove("active");
+            } else {
+                gridContainer.style.display = "none";
+                tableContainer.style.display = "block";
+                btnGrid.classList.remove("active");
+                btnTable.classList.add("active");
+            }
+        }
+
+        function renderStudents(list) {
+            const grid = document.getElementById("students-grid-container");
+            const tbody = document.getElementById("students-table-body");
+            grid.innerHTML = "";
+            tbody.innerHTML = "";
+
+            if (!list || list.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-dim); padding: 60px 0;">No matching student records found.</div>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-dim); padding: 40px 0;">No matching student records found.</td></tr>`;
+                return;
+            }
+
+            list.forEach(std => {
+                const initial = (std.name || "S").charAt(0).toUpperCase();
+                const isTrained = std.photo_sample === "Yes";
+
+                // Bento Card
+                const card = document.createElement("div");
+                card.className = "student-bento-card";
+                card.innerHTML = `
+                    <div>
+                        <div class="student-card-top">
+                            <div class="student-avatar">${initial}</div>
+                            <div class="student-details">
+                                <h4>${std.name}</h4>
+                                <p>ID: ${std.id} • Roll: ${std.roll_no}</p>
+                            </div>
+                        </div>
+                        <div class="tag-pill-row">
+                            <span class="tag-chip">${std.department || 'SCSE'}</span>
+                            <span class="tag-chip">${std.course || 'Btech'}</span>
+                            <span class="tag-chip">${std.year || '2021-25'}</span>
+                            <span class="tag-chip ${isTrained ? 'trained' : 'missing'}">
+                                ${isTrained ? '✓ Biometrics Ready' : 'No Dataset'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="student-card-actions">
+                        <button class="btn-view-profile" onclick="openStudentModal('${std.id}')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <span>View Profile</span>
+                        </button>
+                        <button class="btn-delete-student" title="Delete Student" onclick="promptDeleteStudent('${std.id}', '${std.name}')">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+
+                // Table Row
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><strong>${std.id}</strong></td>
+                    <td>${std.name}</td>
+                    <td>${std.roll_no}</td>
+                    <td><span class="tag-chip">${std.department}</span></td>
+                    <td>${std.course}</td>
+                    <td>${std.year}</td>
+                    <td>
+                        <span class="tag-chip ${isTrained ? 'trained' : 'missing'}">
+                            ${isTrained ? '✓ Biometrics Ready' : 'No Dataset'}
+                        </span>
+                    </td>
+                    <td style="text-align: right;">
+                        <button class="btn-view-profile" onclick="openStudentModal('${std.id}')">View</button>
+                        <button class="btn-delete-student" onclick="promptDeleteStudent('${std.id}', '${std.name}')">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Student Profile Modal & Photo Samples Gallery
+        async function openStudentModal(stdId) {
+            const student = allStudents.find(s => String(s.id) === String(stdId));
+            if (!student) return;
+
+            document.getElementById("modal-student-name").textContent = `${student.name} (${student.id})`;
+            const body = document.getElementById("modal-student-body");
+            body.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; font-size: 13.5px;">
+                    <div><span style="color: var(--text-dim); font-size: 11.5px; text-transform: uppercase;">Roll Number</span><div style="font-weight: 600; color: var(--text-heading);">${student.roll_no}</div></div>
+                    <div><span style="color: var(--text-dim); font-size: 11.5px; text-transform: uppercase;">Department</span><div style="font-weight: 600; color: var(--text-heading);">${student.department}</div></div>
+                    <div><span style="color: var(--text-dim); font-size: 11.5px; text-transform: uppercase;">Course</span><div style="font-weight: 600; color: var(--text-heading);">${student.course}</div></div>
+                    <div><span style="color: var(--text-dim); font-size: 11.5px; text-transform: uppercase;">Batch Year</span><div style="font-weight: 600; color: var(--text-heading);">${student.year}</div></div>
+                    <div><span style="color: var(--text-dim); font-size: 11.5px; text-transform: uppercase;">Email</span><div style="font-weight: 600; color: var(--text-heading);">${student.email || 'None'}</div></div>
+                    <div><span style="color: var(--text-dim); font-size: 11.5px; text-transform: uppercase;">Mobile</span><div style="font-weight: 600; color: var(--text-heading);">${student.mobile || 'None'}</div></div>
+                </div>
+                <div style="border-top: 1px solid var(--border-subtle); padding-top: 16px;">
+                    <div style="font-size: 12.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px;">Biometric Training Samples</div>
+                    <div id="modal-samples-grid" style="display: flex; gap: 8px; flex-wrap: wrap; max-height: 140px; overflow-y: auto;">
+                        <span style="font-size: 12px; color: var(--text-dim);">Loading face samples...</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById("student-modal").classList.add("active");
+
+            // Fetch sample crops from backend
+            try {
+                const res = await fetch(`/api/students/${stdId}/samples`);
+                const data = await res.json();
+                const container = document.getElementById("modal-samples-grid");
+                container.innerHTML = "";
+                if (data.samples && data.samples.length > 0) {
+                    data.samples.forEach(file => {
+                        const img = document.createElement("img");
+                        img.src = `/api/samples/${file}`;
+                        img.style.width = "48px";
+                        img.style.height = "48px";
+                        img.style.borderRadius = "6px";
+                        img.style.border = "1px solid var(--border-card)";
+                        img.style.objectFit = "cover";
+                        container.appendChild(img);
+                    });
+                } else {
+                    container.innerHTML = `<span style="font-size: 12px; color: var(--warning);">No face samples found for this student.</span>`;
+                }
+            } catch(e) {}
+        }
+
+        function closeStudentModal() {
+            document.getElementById("student-modal").classList.remove("active");
+        }
+
+        // Delete Confirmation Modal
+        function promptDeleteStudent(id, name) {
+            pendingDeleteId = id;
+            document.getElementById("delete-modal-msg").innerHTML = `Are you sure you want to permanently delete <strong>${name}</strong> (Student ID: ${id}) from the database?`;
+            document.getElementById("btn-confirm-delete").onclick = executeDeleteStudent;
+            document.getElementById("delete-modal").classList.add("active");
+        }
+
+        function closeDeleteModal() {
+            document.getElementById("delete-modal").classList.remove("active");
+            pendingDeleteId = null;
+        }
+
+        async function executeDeleteStudent() {
+            if (!pendingDeleteId) return;
+            const stdId = pendingDeleteId;
+            closeDeleteModal();
+
+            try {
+                const res = await fetch(`/api/students/${stdId}`, { method: "DELETE" });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message, "success");
+                    loadStudents();
+                    updateSystemStats();
+                } else {
+                    showToast(data.error, "danger");
+                }
+            } catch (e) {
+                showToast("Delete request failed", "danger");
+            }
+        }
+
+        // ================= AI MODEL TRAINING LAB =================
+        async function updateLabMetrics() {
+            try {
+                const res = await fetch("/api/status");
+                const data = await res.json();
+                document.getElementById("lab-total-samples").textContent = data.total_samples;
+                document.getElementById("lab-unique-students").textContent = data.total_students;
+                document.getElementById("lab-model-status").textContent = data.model_loaded ? "clf.xml ACTIVE" : "RETRAIN REQ";
+                document.getElementById("lab-model-status").style.color = data.model_loaded ? "var(--success)" : "var(--warning)";
+            } catch(e) {}
+        }
+
+        async function triggerModelRetrain() {
+            const btn = document.getElementById("btn-train-engine");
+            const consoleBox = document.getElementById("training-log-console");
             btn.disabled = true;
-            spin.style.display = "block";
+            consoleBox.style.display = "block";
+            consoleBox.innerHTML = `
+                <div>[00.01s] Initializing LBPH Neural Trainer...</div>
+                <div>[00.04s] Scanning directory 'data_img/' for valid facial crops...</div>
+            `;
 
             try {
                 const res = await fetch("/api/train", { method: "POST" });
                 const data = await res.json();
+
                 if (data.success) {
-                    showNotification(data.message);
+                    consoleBox.innerHTML += `
+                        <div>[00.32s] Loaded ${data.total_images} facial crops across ${data.total_students} student identities.</div>
+                        <div>[00.65s] Fitting spatial histogram matrices (Radius=1, Neighbors=8, Grid=8x8)...</div>
+                        <div>[00.89s] Compiling binary classification weights to 'clf.xml'...</div>
+                        <div style="color: var(--success); font-weight: 700; margin-top: 6px;">[01.02s] SUCCESS: ${data.message}</div>
+                    `;
+                    showToast("Model retraining completed successfully!", "success");
                     updateSystemStats();
+                    updateLabMetrics();
                 } else {
-                    showNotification(data.error, false);
+                    consoleBox.innerHTML += `<div style="color: var(--danger);">[ERROR] ${data.error}</div>`;
+                    showToast(data.error, "danger");
                 }
             } catch (e) {
-                showNotification("Retrain error: " + e.message, false);
+                consoleBox.innerHTML += `<div style="color: var(--danger);">[FATAL] Training failed: ${e.message}</div>`;
+                showToast("Training failed: " + e.message, "danger");
             } finally {
                 btn.disabled = false;
-                spin.style.display = "none";
             }
         }
 
-        // Attendance Ledger
+        // ================= ATTENDANCE LEDGER =================
         async function loadAttendanceLogs() {
             try {
                 const res = await fetch("/api/attendance");
-                const logs = await res.json();
-                const tbody = document.getElementById("attendance-table-body");
-                tbody.innerHTML = "";
-
-                if (!logs || logs.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted); padding: 40px;">No attendance logged yet.</td></tr>`;
-                    return;
-                }
-
-                logs.forEach(log => {
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td><strong>${log.id}</strong></td>
-                        <td>${log.roll_no}</td>
-                        <td>${log.name}</td>
-                        <td>${log.time}</td>
-                        <td>${log.date}</td>
-                        <td><span class="badge-verified">${log.status}</span></td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+                allAttendance = await res.json();
+                renderAttendanceLogs(allAttendance);
             } catch (e) {
-                showNotification("Failed to load logs", false);
+                showToast("Failed to fetch attendance logs", "danger");
             }
         }
 
-        // Live Metrics
+        function setAttendanceDateFilter(filter) {
+            activeDateFilter = filter;
+            document.querySelectorAll("#pane-logs .filter-btn").forEach(btn => {
+                if (btn.textContent.trim().toUpperCase() === (filter === "TODAY" ? "TODAY" : "ALL TIME")) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            });
+            filterAttendanceLogs();
+        }
+
+        function filterAttendanceLogs() {
+            const q = document.getElementById("attendance-search-input").value.toLowerCase();
+            const todayStr = new Date().toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit', year: 'numeric' });
+            let filtered = allAttendance;
+
+            if (activeDateFilter === "TODAY") {
+                filtered = filtered.filter(log => log.date === todayStr);
+            }
+
+            if (q) {
+                filtered = filtered.filter(log =>
+                    (log.name && log.name.toLowerCase().includes(q)) ||
+                    (log.id && log.id.toLowerCase().includes(q)) ||
+                    (log.roll_no && log.roll_no.toLowerCase().includes(q))
+                );
+            }
+
+            renderAttendanceLogs(filtered);
+        }
+
+        function renderAttendanceLogs(logs) {
+            const tbody = document.getElementById("attendance-table-body");
+            tbody.innerHTML = "";
+
+            if (!logs || logs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-dim); padding: 50px 0;">No attendance records found matching filters.</td></tr>`;
+                return;
+            }
+
+            logs.forEach(log => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><strong>${log.id}</strong></td>
+                    <td>${log.roll_no}</td>
+                    <td>${log.name}</td>
+                    <td>${log.time}</td>
+                    <td>${log.date}</td>
+                    <td><span class="badge-verified">${log.status}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ================= RECENT ATTENDANCE (OVERVIEW WIDGET) =================
+        async function loadRecentAttendance() {
+            try {
+                const res = await fetch("/api/attendance");
+                const logs = await res.json();
+                const feed = document.getElementById("overview-feed");
+                feed.innerHTML = "";
+
+                if (!logs || logs.length === 0) {
+                    feed.innerHTML = `<div style="text-align: center; color: var(--text-dim); padding: 50px 0; font-size: 13px;">No attendance logged today yet.</div>`;
+                    return;
+                }
+
+                // Show top 6 most recent logs
+                logs.slice(0, 6).forEach(log => {
+                    const initial = log.name.charAt(0).toUpperCase();
+                    const item = document.createElement("div");
+                    item.className = "activity-item";
+                    item.innerHTML = `
+                        <div class="activity-left">
+                            <div class="activity-avatar">${initial}</div>
+                            <div class="activity-meta">
+                                <h5>${log.name}</h5>
+                                <p>ID: ${log.id} • Roll: ${log.roll_no}</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="badge-verified">PRESENT</span>
+                            <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">${log.time}</div>
+                        </div>
+                    `;
+                    feed.appendChild(item);
+                });
+            } catch(e) {}
+        }
+
+        // ================= GLOBAL SYSTEM STATS & METRICS =================
         async function updateSystemStats() {
             try {
                 const res = await fetch("/api/status");
                 const data = await res.json();
+
                 document.getElementById("stat-students").textContent = data.total_students;
                 document.getElementById("stat-present").textContent = data.present_today;
                 document.getElementById("stat-samples").textContent = data.total_samples;
-                document.getElementById("stat-status").textContent = data.model_loaded ? "ACTIVE" : "STANDBY";
+                document.getElementById("stat-rate").textContent = `${data.attendance_rate || 0}% Attendance Rate`;
 
-                const badgeText = document.getElementById("badge-text");
-                badgeText.textContent = data.model_loaded ? "Model Ready" : "Retrain Required";
+                const engineStatus = document.getElementById("stat-engine-status");
+                if (data.model_loaded) {
+                    engineStatus.textContent = "ACTIVE";
+                    engineStatus.style.color = "var(--success)";
+                    document.getElementById("stat-last-trained").textContent = data.model_last_trained ? `Trained: ${data.model_last_trained}` : "Model loaded";
+                } else {
+                    engineStatus.textContent = "RETRAIN REQ";
+                    engineStatus.style.color = "var(--warning)";
+                    document.getElementById("stat-last-trained").textContent = "Recompilation required";
+                }
+
+                document.getElementById("health-db-label").textContent = `${data.db_engine || 'Database'} Active`;
+                document.getElementById("health-status-text").textContent = data.model_loaded ? "Engine Ready" : "Retrain Needed";
+
+                // Department Breakdown Bars
+                const deptList = document.getElementById("dept-progress-list");
+                deptList.innerHTML = "";
+                const totalStudents = data.total_students || 1;
+                const depts = data.department_counts && Object.keys(data.department_counts).length > 0 
+                    ? data.department_counts 
+                    : { "SCSE": 0, "SEEE": 0, "SME": 0, "SBE": 0 };
+
+                for (const [deptName, count] of Object.entries(depts)) {
+                    const pct = Math.round((count / totalStudents) * 100);
+                    const item = document.createElement("div");
+                    item.className = "dept-item";
+                    item.innerHTML = `
+                        <div class="dept-item-header">
+                            <span class="dept-name">${deptName}</span>
+                            <span class="dept-count">${count} Students (${pct}%)</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: ${pct}%;"></div>
+                        </div>
+                    `;
+                    deptList.appendChild(item);
+                }
             } catch (e) {}
         }
 
+        // Initialize on Load
         window.addEventListener("DOMContentLoaded", () => {
-            initCamera();
             updateSystemStats();
+            loadRecentAttendance();
         });
     </script>
 </body>

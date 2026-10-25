@@ -118,12 +118,40 @@ def get_status():
                 if len(parts) >= 5 and parts[4] == today_str:
                     present_today += 1
 
+    attendance_rate = round((present_today / total_students) * 100, 1) if total_students > 0 else 0
+
+    dept_counts = {}
+    try:
+        conn = db.get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT Department, COUNT(*) FROM student GROUP BY Department")
+        for r in cur.fetchall():
+            if r[0]:
+                dept_counts[str(r[0])] = r[1]
+        conn.close()
+    except Exception:
+        pass
+
+    clf_path = os.path.join(BASE_DIR, "clf.xml")
+    model_last_trained = None
+    if os.path.exists(clf_path):
+        try:
+            mtime = os.path.getmtime(clf_path)
+            model_last_trained = datetime.fromtimestamp(mtime).strftime("%d/%m/%Y %H:%M")
+        except Exception:
+            pass
+
     return jsonify({
         "model_loaded": clf_model is not None,
         "total_students": total_students,
         "total_samples": total_samples,
         "present_today": present_today,
-        "server_time": datetime.now().strftime("%H:%M:%S")
+        "attendance_rate": attendance_rate,
+        "department_counts": dept_counts,
+        "model_last_trained": model_last_trained,
+        "server_time": datetime.now().strftime("%H:%M:%S"),
+        "server_date": datetime.now().strftime("%A, %d %B %Y"),
+        "db_engine": db.DB_ENGINE
     })
 
 @app.route("/api/recognize", methods=["POST"])
@@ -396,6 +424,48 @@ def export_csv():
     if os.path.exists(CSV_FILE):
         return send_file(CSV_FILE, as_attachment=True, download_name="attendance_records.csv", mimetype="text/csv")
     return jsonify({"error": "Attendance CSV not found"}), 404
+
+@app.route("/api/samples/<filename>", methods=["GET"])
+def get_sample_image(filename):
+    if "/" in filename or "\\" in filename or ".." in filename:
+        return jsonify({"error": "Invalid filename"}), 400
+    if not filename.lower().endswith(('.jpg', '.jpeg', '.png')):
+        return jsonify({"error": "Invalid file extension"}), 400
+    file_path = os.path.join(DATA_IMG_DIR, filename)
+    if os.path.exists(file_path):
+        return send_file(file_path, mimetype="image/jpeg")
+    return jsonify({"error": "Sample image not found"}), 404
+
+@app.route("/api/students/<std_id>/samples", methods=["GET"])
+def get_student_samples(std_id):
+    if not os.path.exists(DATA_IMG_DIR):
+        return jsonify({"student_id": std_id, "total_samples": 0, "samples": []})
+    all_files = os.listdir(DATA_IMG_DIR)
+    matched = [f for f in all_files if (f.startswith(f"student.{std_id}.") or f.startswith(f"stdudent.{std_id}.")) and f.lower().endswith(('.jpg', '.png'))]
+    def extract_sample_num(name):
+        parts = name.split(".")
+        if len(parts) >= 3 and parts[2].isdigit():
+            return int(parts[2])
+        return 0
+    matched.sort(key=extract_sample_num, reverse=True)
+    return jsonify({
+        "student_id": std_id,
+        "total_samples": len(matched),
+        "samples": matched[:12]
+    })
+
+@app.route("/api/attendance/manual", methods=["POST"])
+def mark_manual_attendance():
+    data = request.get_json(force=True)
+    std_id = data.get("id", "").strip()
+    roll_no = data.get("roll_no", "").strip()
+    name = data.get("name", "").strip()
+    if not std_id or not name:
+        return jsonify({"error": "Student ID and Name are required"}), 400
+    is_new, time_str, date_str = mark_attendance_record(std_id, roll_no, name)
+    if is_new:
+        return jsonify({"success": True, "message": f"Attendance successfully marked for {name} ({time_str})"})
+    return jsonify({"success": True, "message": f"{name} is already marked Present for today ({time_str})"})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
